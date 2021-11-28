@@ -1,0 +1,64 @@
+<div class="card-body width-minimized-padding body-bg-custom">
+    <div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+        {{ warningMessage | translate }}
+        <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+        {{ successMessage | translate }}
+        <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+
+    <form *ngIf="offers && newSubscription"> <!-- class="form-inline" -->
+        <div class="text-left"><label for="offer">{{ 'Member.subscrip.component.form.select.offer' | translate }}</label></div>
+        <select class="custom-select form-group row select-bg-custom" size="2" name="offer" [(ngModel)]="newSubscription.offer"
+            [ngClass]="{'is-invalid': displayFormError}" (change)="checkSelection()">
+            <!--option selected>Open this select menu</option-->
+            <option *ngIf="offers.individual" value="{{ offers.individual.iri }}" class="form-control-sm zeroed-padding-left">
+                {{ addonTranslator.getOriginalTranslation(offers.individual.label) }} : {{ offers.individual.duration }}
+                {{'Member.subscrip.component.form.duration.to.price'|translate}} {{ displayEuroAmount(offers.individual.price) }}
+            </option>
+            <option *ngIf="offers.merchant && activatedMerchant()" class="form-control-sm zeroed-padding-left" value="{{ getActivatedMerchantIri() }}">
+                {{ addonTranslator.getOriginalTranslation(offers.merchant.label) }} : {{ offers.merchant.duration }}
+                {{'Member.subscrip.component.form.duration.to.price'|translate}} {{ displayEuroAmount(offers.merchant.price) }}
+            </option>
+            <option *ngIf="!activatedMerchant()" class="form-control-sm zeroed-padding-left" [disabled]="true" value="0">
+                {{ 'Member.subscrip.component.form.merchant.not.available' | translate }}
+            </option>
+        </select>
+        <div [hidden]="!displayFormError" class="invalid-feedback">
+            <div>{{ 'Member.subscrip.component.form.offer.required' | translate }}</div>
+        </div>
+        <div class="text-right font-weight-bold text-right-margin">
+            {{ 'Member.subscrip.component.form.total.order' | translate }}&nbsp;:&nbsp;{{ getEuroTotalOrderToDisplay() }}
+        </div>
+        <div class="text-left">
+            <div class="form-group col-12 form-check form-check-inline custom-checkbox mini-padding-left">
+                <input type="checkbox" id="checkSellingTerms" class="form-check-input custom-control-input" [(ngModel)]="checkSellingTerms"
+                    [ngClass]="{ 'is-invalid': displayCheckError }" [ngModelOptions]="{standalone: true}" (change)="preventUncheck()" [disabled]="mandatoryCheckFrozen"/>
+                    <!-- [readonly]="mandatoryCheckFrozen" -->
+                <label class="custom-control-label col-7 col-form-label-sm height-minimized-line keep-original-color" for="checkSellingTerms">
+                    {{ 'Selling-terms.conditions.read' | translate }}
+                    <a href="/assets/infos/Selling-terms_{{languageCode}}.pdf" download="{{'Selling-terms.file'|translate}}.pdf" target="_blank">{{'Selling-terms.title'|translate}}</a>{{ 'Selling-terms.conditions.accept' | translate }}
+                </label>
+                <div [hidden]="!displayCheckError" class="invalid-feedback">
+                    <div>{{ 'Selling-terms.order.check.conditions.required' | translate }}</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="form-row justify-content-center">
+            <button [hidden]="amountToBePaid()" type="submit" [disabled]="loading" (click)="confirmOrder()" class="btn btn-primary mr-4">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.subscrip.component.form.btn.submit' | translate }}
+            </button>
+            <div [hidden]="!amountToBePaid() || orderPaymentProcessing" #ppButtonContainer></div>
+            <div [hidden]="!orderPaymentProcessing" class="spinner-border text-info" role="status">
+                <span class="sr-only">{{ 'Info.waiting.for.processing.text' | translate }}</span>
+            </div>
+        </div>
+    </form>
+
+</div>

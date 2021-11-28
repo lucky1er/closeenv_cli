@@ -1,0 +1,122 @@
+<ng-template #modalPreviewSearch let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ 'Home.welcome.preview.modal.search.title' | translate }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form class="form-search">
+            <div class="form-row form-group">
+                <div class="col-6 col-md-6 col-sm-6">
+                    <select class="custom-select custom-select-sm" [(ngModel)]="targetShopCategory" [ngModelOptions]="{standalone: true}">
+                        <option value="0" disabled selected>{{ 'Home.welcome.preview.select.category.placeholder' | translate }}</option>
+                        <option *ngFor="let category of shopCategories" value="{{ category.code }}">{{ category.label }}</option>
+                    </select>
+                </div>
+                <div class="col-6 col-md-6 col-sm-6 text-left">
+                    <button type="submit" [disabled]="searchPending || targetShopCategory === '0'" class="btn btn-sm btn-primary" (click)="nearbyShopSearch()"
+                        [ngClass]="{'btn-action-disabled': searchPending || targetShopCategory === '0'}">
+                        <span *ngIf="searchPending" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Home.welcome.preview.search.btn.submit' | translate }}
+                    </button>
+                </div>
+            </div>
+            <div [hidden]="searchResultPlaces === null" class="form-row">
+                <div [hidden]="searchResultPlaces !== null && searchResultPlaces.length" class="col order-0 alert alert-warning alert-dismissible fade show" role="alert">
+                    {{ 'Home.welcome.preview.search.empty' | translate }}
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button [hidden]="searchPending" type="button" class="btn btn-outline-dark" (click)="modal.close('close')">
+            {{ 'Home.welcome.preview.modal.search.btn.close' | translate }}
+        </button>
+        <div [hidden]="!searchPending" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+    </div>
+</ng-template>
+
+<div [hidden]="!readyForMap" id="map" leaflet [leafletOptions]="mapService.getMapOptions()" (leafletMapReady)="mapService.onMapReady($event)">
+    <div class="btn-group-vertical btn-group-sm map-overlay float-left shift-from-left">
+        <button (click)="openPreviewSearch()" type="button" class="btn btn-color-emphasize">
+            {{ 'Home.welcome.preview.btn.search' | translate }}
+        </button>
+    </div>
+    <div class="btn-group-vertical btn-group-sm map-overlay float-right">
+        <a class="btn btn-secondary btn-color-custom" [routerLink]="['/signin']" [queryParams]="{lang: addonTranslator.currentLgCode}" >
+            {{ 'Nav.item.signin' | translate }}
+        </a>
+        <a class="btn btn-secondary btn-color-custom" [routerLink]="['/signup']" [queryParams]="{lang: addonTranslator.currentLgCode}" >
+            {{ 'Nav.item.signup' | translate }}
+        </a>
+    </div>
+</div>
+<div [hidden]="!mapService.isErrorGettingPlaces()" class="col order-0 alert alert-danger alert-dismissible fade show" role="alert">
+    {{ mapService.getErrorGettingPlacesMessage() | translate }}
+    <button (click)="mapService.removeErrorGettingPlaces()" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="readyForMap" class="col order-2">
+    <div class="card-deck">
+        <div class="card col-md-6 card-width-minimized-margin">
+            <div class="card-body">
+                <h1 class="card-title welcome-title">{{ 'Home.welcome.on.website' | translate }}</h1>
+                <p class="card-text">
+                    <em>{{ 'Home.welcome.foundation.text' | translate }}</em>
+                </p>
+                <p class="card-text" *ngIf="false">
+                    {{ 'Home.welcome.preview.text' | translate }}
+                    <span>
+                        <a class="nav-link" [routerLink]="['/relocate']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+                            <i class="fas fa-arrow-right"></i>&nbsp;{{ 'Home.welcome.preview.text.link' | translate }}
+                        </a>
+                    </span>
+                </p>
+                <div *ngIf="false">
+                    <b>{{ 'Home.welcome.expectations.text' | translate }}</b>
+                    <ul>
+                        <li>{{ 'Home.welcome.expectations.first.way' | translate }}</li>
+                        <li>{{ 'Home.welcome.expectations.second.way' | translate }}</li>
+                    </ul>
+                </div>
+                <div>
+                    <p class="card-text"> {{ 'Home.welcome.fundamental.questions.first' | translate }}</p>
+                    <p class="card-text"> {{ 'Home.welcome.fundamental.questions.second' | translate }}</p>
+                    <p class="card-text"> {{ 'Home.welcome.fundamental.questions.third' | translate }}</p>
+                </div>
+                <div class="card border-light col-md-12 ">
+                    <div class="card-body">
+                        <img [src]="getWordCloudImageRelativePath()" class="img-fluid" alt="word cloud">
+                    </div>
+                </div>
+                <p class="card-text" [innerHtml]="getApplicationPurposeTextHtml()"></p>
+                <p class="card-text" *ngIf="false">
+                    <em>{{ 'Home.welcome.signature.founder' | translate }}</em>
+                </p>
+            </div>
+        </div>
+        <div class="card col-md-6 card-width-minimized-margin" >
+            <div class="card-body" *ngIf="homeMessages">
+                <section  *ngFor="let homeMessage of homeMessages" class="home-message-section">
+                    <h6 class="card-subtitle text-muted">{{ homeMessage.validFrom | date:'longDate':undefined:locale }}</h6>
+                    <p class="card-text" [innerHtml]="addonTranslator.getOriginalTranslation(homeMessage.text)"></p>
+                </section>
+                <p class="card-text">
+                    {{ 'Home.welcome.news.after.p-1.text' | translate }}
+                </p>
+                <p class="card-text">
+                    {{ 'Home.welcome.news.after.p-2.text' | translate }}
+                </p>
+                <p class="card-text">
+                    {{ 'Home.welcome.news.after.p-3.text' | translate }}
+                </p>
+                <p class="card-text">
+                    {{ 'Home.welcome.news.after.p-4.text' | translate }}
+                </p>
+            </div>
+        </div>
+    </div>
+</div>

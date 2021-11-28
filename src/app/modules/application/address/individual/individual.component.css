@@ -1,0 +1,29 @@
+.btn-action-enabled {
+    color: #007bff;
+    cursor: pointer;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.btn-first-position {
+    position: absolute;
+    bottom: 20%;
+    left: 0%;
+}
+.btn-second-position {
+    position: absolute;
+    bottom: 20%;
+    left: 30%;
+}
+.btn-third-position {
+    position: absolute;
+    bottom: 20%;
+    left: 60%;
+}
+.btn-filter-chk {
+    background-color: tan;
+}
+.item-selectable {
+    cursor: pointer;
+}

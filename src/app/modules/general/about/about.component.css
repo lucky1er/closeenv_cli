@@ -1,0 +1,33 @@
+.height-minimized-margin {
+    margin-bottom: 0.5rem;
+}
+.card-width-minimized-margin {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+.detach-from-above {
+    padding-top: 15px;
+}
+
+.blockquote-highlight {
+    border-left: 1px solid #cfcfcf;
+    margin: 1.5em auto;
+    padding: 0.5em 10px;
+    quotes: "“" "";
+    width: 98%;
+}
+
+.minimized-padding {
+    padding: 0;
+}
+.display-flex {
+    display: flex;
+}
+.osm-text {
+    font-size: 2rem;
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    padding-right: 0;
+    padding-left: 0;
+}

@@ -1,0 +1,19 @@
+.icon-action-enabled {
+    color: #007bff;
+    cursor: pointer;
+    font-size: 1.5rem;
+}
+.icon-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+    font-size: 1.5rem;
+}
+.icon-color-archiving {
+    color: orange;
+}
+.icon-color-archived {
+    color: green;
+}
+.no-extra-space {
+    margin-bottom: 0;
+}

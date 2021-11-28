@@ -1,0 +1,106 @@
+.display-inline-flex {
+    display: inline-flex;
+}
+
+.btn-action-enabled {
+    color: #007bff;
+    cursor: pointer;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+
+.btn-first-position {
+    position: absolute;
+    bottom: 20%;
+    left: 0%;
+}
+.btn-second-position {
+    position: absolute;
+    bottom: 20%;
+    left: 30%;
+}
+.btn-third-position {
+    position: absolute;
+    bottom: 20%;
+    left: 60%;
+}
+.btn-invisible {
+    display: none;
+}
+.btn-group-toggle button {
+    padding-right: 0.25rem;
+    padding-left: 0.25rem;
+}
+.btn-group-toggle button.active {
+    font-weight: bolder;
+    font-size: 0.8rem;
+    line-height: 0.8;
+}
+.btn-group-toggle button.unselected {
+    font-weight: lighter;
+    font-size: 0.75rem;
+    line-height: 0.8;
+}
+
+.item-selectable {
+    cursor: pointer;
+}
+.item-selectable:focus{
+    border: blue;
+}
+
+.table-badge-display {
+    display: inline-table; /* à cause de pb sur mobile (petit écran) */
+    font-weight: normal;
+}
+
+.item-minimized-padding {
+    padding-top: 0.25rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+}
+.margin-previous {
+    margin-top: 5px;
+}
+.height-minimized-margin {
+    margin-top: 0.5rem;
+    margin-bottom: 0;
+    margin-left: 0.5rem;
+}
+
+.thinner-line-height {
+    line-height: 0.75;
+}
+.height-minimized-line {
+    line-height: 1;
+}
+.btn-filter-chk {
+    background-color: tan;
+    /* darkseagreen, mediumseagreen, lightsalmon, darksalmon, khaki, orange, rosybrown, sandybrown */
+}
+.no-padding-right {
+    padding-right: 0;
+}
+.minimized-padding-left {
+    padding-left: 3px;
+}
+.little-bit-more-down {
+    margin-top: 0.5rem;
+}
+
+.color-msg-info {
+    color: darkgreen;
+}
+.color-trash {
+    color: orangered;
+}
+.color-flag {
+    color: darkgoldenrod;
+}
+
+.modal-xxl .modal-lg {
+    max-width: 90%;
+}

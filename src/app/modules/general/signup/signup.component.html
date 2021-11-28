@@ -1,0 +1,126 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage | translate }}
+    <p [hidden]="!showSuccessAdditionalInfo">{{ successAdditionalInfo | translate }}</p>
+    <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="card">
+    <h4 class="card-header">{{ 'Signup.form.header' | translate }}</h4>
+    <div class="card-body">
+        <form class="form-signin" [formGroup]="signupForm" (ngSubmit)="registerUser()">
+            <div class="form-group">
+                <div class="form-check form-check-inline custom-checkbox">
+                    <input type="checkbox" formControlName="checkPrivacyPolicy" class="form-check-input custom-control-input"
+                        [ngClass]="{ 'is-invalid': submitted && f.checkPrivacyPolicy.errors }" id="checkPrivacyPolicy" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line keep-original-color" for="checkPrivacyPolicy">
+                        {{ 'Privacy-policy.terms.provisions.read' | translate }}
+                        <a [routerLink]="['/privacy']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+                            {{'Privacy-policy.title'|translate}}</a>{{ 'Privacy-policy.terms.provisions.accept' | translate }}
+                    </label>
+                    <div *ngIf="submitted && f.checkPrivacyPolicy.errors" class="invalid-feedback"><!--{# f.checkPrivacyPolicy.errors|json #}-->
+                        <div *ngIf="f.checkPrivacyPolicy.errors.required">{{ 'Privacy-policy.signup.check.privacy.required' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-6">
+                    <label for="firstName">{{ 'Signup.form.firstName' | translate }}</label>
+                    <input type="text" formControlName="firstName" class="form-control" placeholder="{{ 'Signup.form.firstName' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.firstName.errors }" />
+                    <div *ngIf="submitted && f.firstName.errors" class="invalid-feedback">
+                        <div *ngIf="f.firstName.errors.required">{{ 'Signup.form.firstName.required' | translate }}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-6">
+                    <label for="lastName">{{ 'Signup.form.lastName' | translate }}</label>
+                    <input type="text" formControlName="lastName" class="form-control" placeholder="{{ 'Signup.form.lastName' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.lastName.errors }" />
+                    <div *ngIf="submitted && f.lastName.errors" class="invalid-feedback">
+                        <div *ngIf="f.lastName.errors.required">{{ 'Signup.form.lastName.required' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <label for="email">{{ 'Signup.form.email' | translate }}</label>
+                <input type="email" formControlName="email" class="form-control" placeholder="{{ 'Signup.form.email' | translate }}"
+                    [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors.required">{{ 'Signup.form.email.required' | translate }}</div>
+                    <div *ngIf="f.email.errors.email">{{ 'Signup.form.email.invalid' | translate }}</div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <geoapify-geocoder-autocomplete
+                        [lang]="addonTranslator.getTranslationDefaultLang()"
+                        [type]="searchLocation.type"
+                        [placeholder]="'Member.address.form.search.placeholder' | translate"
+                        [skipIcons]="searchLocation.skipIcons"
+                        [skipDetails]="searchLocation.skipDetails"
+                        [biasByCountryCode]="searchLocation.biasByCountryCode"
+                        (placeSelect)="refreshAddressFromSuggestion($event)">
+                    </geoapify-geocoder-autocomplete>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="address" class="sr-only">{{ 'Signup.form.address' | translate }}</label>
+                    <input type="text" formControlName="address" class="form-control" placeholder="{{ 'Signup.form.address' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.address.errors }" readonly="readonly" />
+                    <div *ngIf="submitted && f.address.errors" class="invalid-feedback">
+                        <div *ngIf="f.address.errors.required">{{ 'Signup.form.address.required' | translate }}</div>
+                        <div *ngIf="f.address.errors.minlength">{{ 'Signup.form.address.minlength' | translate:{'requiredLength':f.address.errors.minlength.requiredLength} }}</div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="country" class="sr-only">{{ 'Signup.form.country' | translate }}</label>
+                    <input type="text" formControlName="country" class="form-control" placeholder="{{ 'Signup.form.country' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.country.errors }" readonly="readonly" />
+                    <div *ngIf="submitted && f.country.errors" class="invalid-feedback">
+                        <div *ngIf="f.country.errors.required || f.country.errors.minlength">
+                            {{ 'Signup.form.country.required' | translate:{'precision': f.country.errors.minlength ? '('+f.country.errors.minlength.requiredLength+')' : ''} }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-md-8">
+                    <label for="city" class="sr-only">{{ 'Signup.form.city' | translate }}</label>
+                    <input type="text" formControlName="city" class="form-control" placeholder="{{ 'Signup.form.city' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.city.errors }" readonly="readonly" />
+                    <div *ngIf="submitted && f.city.errors" class="invalid-feedback">
+                        <div *ngIf="f.city.errors.required || f.city.errors.minlength">
+                            {{ 'Signup.form.city.required' | translate:{'precision': f.city.errors.minlength ? '('+f.city.errors.minlength.requiredLength+')' : ''} }}
+                        </div>
+                    </div>
+                </div>
+                <div class="form-group col-md-4">
+                    <label for="postCode" class="sr-only">{{ 'Signup.form.postCode' | translate }}</label>
+                    <input type="text" formControlName="postCode" class="form-control" placeholder="{{ 'Signup.form.postCode' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.postCode.errors }" readonly="readonly" />
+                    <div *ngIf="submitted && f.postCode.errors" class="invalid-feedback">
+                        <div *ngIf="f.postCode.errors.required">{{ 'Signup.form.postCode.required' | translate }}</div>
+                        <div *ngIf="f.postCode.errors.minlength">{{ 'Signup.form.postCode.minlength' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+            <input formControlName="county" type="hidden" />
+            <input formControlName="administrative" type="hidden" />
+            <input formControlName="latitude" type="hidden" />
+            <input formControlName="longitude" type="hidden" />
+            <input formControlName="countryCode" type="hidden" />
+            <input formControlName="languageCode" type="hidden" />
+
+            <button type="submit" [disabled]="loading" class="btn btn-block btn-primary">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Signup.form.btn.submit' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

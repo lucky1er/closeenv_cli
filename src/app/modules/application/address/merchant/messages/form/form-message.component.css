@@ -1,0 +1,23 @@
+.btn-action-enabled {
+    cursor: pointer;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+
+.input-type-date-padding {
+    padding-right: 0.10rem;
+}
+
+.custom-invalid-text {
+    /*font-size: 80%;*/
+    color: #dc3545;
+}
+.no-look-like-btn {
+    border: none;
+    padding: 0;
+}
+.error-icon-color {
+    color: orangered;
+}

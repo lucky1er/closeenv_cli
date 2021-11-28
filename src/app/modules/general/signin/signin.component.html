@@ -1,0 +1,55 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<!-- revision à base de https://jasonwatmore.com/post/2020/04/28/angular-9-user-registration-and-login-example-tutorial -->
+<div class="card" [hidden]="hideForm">
+    <h4 class="card-header">{{ 'Signin.form.header' | translate }}</h4>
+    <div class="card-body">
+        <form class="form-signin" [formGroup]="signinForm" (ngSubmit)="loginUser()">
+            <div class="form-group col-12 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <label for="email">{{ 'Signin.form.email' | translate }}</label>
+                <input type="email" formControlName="email" class="form-control" placeholder="{{ 'Signin.form.email.placeholder' | translate }}"
+                    [ngClass]="{ 'is-invalid': submitted && f.email.errors }" />
+                <div *ngIf="submitted && f.email.errors" class="invalid-feedback">
+                    <div *ngIf="f.email.errors.required">{{ 'Signin.form.email.required' | translate }}</div>
+                    <div *ngIf="f.email.errors.email">{{ 'Signin.form.email.invalid' | translate }}</div>
+                </div>
+            </div>
+            <div class="form-group col-12 col-sm-12 col-md-6 col-lg-6 col-xl-3">
+                <label for="password">{{ 'Signin.form.password' | translate }}</label>
+                <input type="password" formControlName="password" class="form-control" placeholder="{{ 'Signin.form.password.placeholder' | translate }}"
+                    [ngClass]="{ 'is-invalid': submitted && f.password.errors }" />
+                <div *ngIf="submitted && f.password.errors" class="invalid-feedback">
+                    <div *ngIf="f.password.errors.required">{{ 'Signin.form.password.required' | translate }}</div>
+                    <div *ngIf="f.password.errors.minlength">{{ 'Signin.form.password.minlength' | translate:{'requiredLength':f.password.errors.minlength.requiredLength} }}</div>
+                </div>
+            </div>
+            <div class="form-group">
+                <button [disabled]="loading" class="btn btn-primary">
+                    <span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span>
+                    {{ 'Nav.item.signin' | translate }}
+                </button>
+                <a class="btn btn-link"
+                    [routerLink]="['../signup']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+                    {{ 'Nav.item.signup' | translate }}
+                </a>
+                <a class="btn btn-link"
+                    [routerLink]="['../password/new']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+                    {{ 'Signin.link.newpassword' | translate }}
+                </a>
+                <a class="btn btn-link float-right" 
+                    [routerLink]="['/privacy']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+                    {{'Privacy-policy.title'|translate}}
+                </a>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="text-center" [hidden]="!hideForm">
+    <div class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+</div>

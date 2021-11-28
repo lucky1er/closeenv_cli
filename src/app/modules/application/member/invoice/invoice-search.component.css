@@ -1,0 +1,35 @@
+
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.btn-action-enabled {
+    color: #007bff;
+    cursor: pointer;
+}
+
+.no-look-like-btn {
+    border: none;
+    padding: 0;
+}
+.contact-icon-color {
+    color: darkgreen;
+}
+
+.no-padding-horizontally {
+    padding-right: 0;
+    padding-left: 0;
+}
+.just-little-left-padding {
+    padding-right: 0;
+    padding-left: 5px;
+}
+.item-minimized-padding {
+    padding-top: 0.25rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0rem;
+}
+.highlighted-row {
+    color: #007bff;
+}

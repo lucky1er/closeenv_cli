@@ -1,0 +1,6 @@
+[
+    { "code": "100", "label": {"en": "Eat and Drink", "fr": "Nourriture et boisson"} },
+    { "code": "550", "label": {"en": "Leisure and Outdoor", "fr": "Loisirs et plein air"} },
+    { "code": "600", "label": {"en": "Shopping", "fr": "Shopping"} },
+    { "code": "700", "label": {"en": "Business and Services", "fr": "Entreprises et Services"} }
+]

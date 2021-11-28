@@ -1,0 +1,52 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form class="form-search">
+    <div class="form-row">
+        <div class="col-6 col-md-6 col-sm-6">
+            <select class="custom-select custom-select-sm" [(ngModel)]="targetCountry" [ngModelOptions]="{standalone: true}">
+                <option value="0" disabled selected>{{ 'Admin.report.users.select.country.placeholder' | translate }}</option>
+                <option *ngFor="let item of countriesList" value="{{ item.countryCode }}">{{ item.country }}</option>
+            </select>
+<!--
+            <label for="select-year" class="sr-only"></label>
+            <input type="text" id="select-year" class="form-control-sm" [(ngModel)]="targetCountry" [ngModelOptions]="{standalone: true}"
+                placeholder="{{ 'Member.invoice.search.year.placeholder' | translate }}" required />
+-->
+        </div>
+        <div class="col-6 col-md-6 col-sm-6 text-left">
+            <button type="submit" [disabled]="dataLoading || !countryTargeted()" class="btn btn-sm btn-primary " (click)="getReportData()"
+                [ngClass]="{'btn-action-disabled': dataLoading || !countryTargeted()}">
+                <span *ngIf="dataLoading" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.invoice.search.btn.submit' | translate }}
+            </button>
+        </div>
+    </div>
+</form>
+<hr/>
+<!-- https://getbootstrap.com/docs/4.0/content/tables/#striped-rows -->
+<div *ngIf="!usersCountByCity">
+    <br/><br/><br/>
+    <div [hidden]="!dataLoading" class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+    <br/><br/><br/><br/><br/>
+</div>
+<table *ngIf="usersCountByCity" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Code Postal</th>
+            <th scope="col">Ville</th>
+            <th scope="col">Nombre de Users</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of usersCountByCity;">
+            <th scope="row">{{ item.postCode }}</th>
+            <td>{{ item.city }}</td>
+            <td>{{ item.nb }}</td>
+        </tr>
+    </tbody>
+</table>

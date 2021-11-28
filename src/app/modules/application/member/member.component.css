@@ -1,0 +1,53 @@
+.height-minimized-padding {
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
+.width-minimized-padding {
+	padding-right: 0.5rem;
+	padding-left: 0.5rem;
+}
+.margin-following {
+    /*margin-right: 5px;*/
+    margin-bottom: 5px;
+}
+.margin-previous {
+    margin-top: 5px;
+}
+.shift-top-right {
+    margin-top: -15px;
+    margin-right: -15px;
+}
+.minimized-margin-following {
+    margin-bottom: 0.5rem;
+}
+
+.disabled {
+	cursor: not-allowed;
+}
+
+.no-look-like-btn {
+    border: none;
+    padding: 0;
+}
+.no-pointer {
+    cursor: default;
+}
+
+.custom-alert-info {
+    /* color: lightyellow; background-color: tan; */
+    color: firebrick; /* navy; slateblue; darkred; tomato; indianred; sienna; maroon; chocolate; */
+    background-color: lightsteelblue;
+}
+.light-color-text {
+    color: white;
+}
+.hidden-element {
+    display: none;
+}
+.order-card-custom {
+    border-color: lightsteelblue;
+}
+.order-header-custom {
+    background-color: #cfe1dcb8;
+    border-color: lightsteelblue;
+}

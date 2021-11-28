@@ -1,0 +1,47 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage | translate }}
+    <p [hidden]="!showSuccessAdditionalInfo">
+        {{ successAdditionalInfo | translate }}
+    </p>
+    <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="buttonOperated" class="card">
+    <h4 class="card-header">{{ 'Ownership.claim.proceed.header' | translate }}</h4>
+    <div class="card-body">
+        <div class="alert alert-info" role="alert">
+            {{ 'Ownership.claim.proceed.instructions.one' | translate }}
+            {{ 'Ownership.claim.proceed.instructions.two' | translate }}
+            {{ 'Ownership.claim.proceed.instructions.three' | translate }}
+        </div>
+        <div class="card">
+            <h5 class="card-header"><span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> {{ 'Ownership.claim.proceed.user.header' | translate }}</h5>
+            <div class="card-body" *ngIf="ownershipClaimer">
+                {{ ownershipClaimer.firstName }} {{ ownershipClaimer.lastName }} ({{ ownershipClaimer.email }})
+            </div>
+        </div>
+        <div class="card">
+            <h5 class="card-header"><span *ngIf="loading" class="spinner-border spinner-border-sm mr-1"></span> {{ 'Ownership.claim.proceed.shop.header' | translate }}</h5>
+            <div class="card-body" *ngIf="claimedShop">
+                <B>{{ claimedShop.title }}</B>, {{ claimedShop.address }}
+                <section>{{ getShopCategoriesText() }}</section>
+                <section>{{ claimedShop.contacts|json }}</section>
+            </div>
+        </div>
+        <button type="button" [disabled]="submitted || incompleteData()" class="btn btn-primary" (click)="confirmOwnership()"
+            [ngClass]="{'btn-action-disabled': submitted || incompleteData()}">
+            {{ 'Ownership.claim.proceed.btn.confirm' | translate }}
+        </button>&nbsp;&nbsp;
+        <button type="button" [disabled]="submitted || incompleteData()" class="btn btn-secondary" (click)="denyOwnership()"
+            [ngClass]="{'btn-action-disabled': submitted || incompleteData()}">
+            {{ 'Ownership.claim.proceed.btn.deny' | translate }}
+        </button>&nbsp;&nbsp;
+    </div>
+</div>

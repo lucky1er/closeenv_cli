@@ -1,0 +1,211 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage | translate }}
+    <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<ng-template #modalShopMessage let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ getMessageModalTitle() }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body" [innerHtml]="safeHtmlMessage"></div>
+</ng-template>
+<ng-template #modalDecisionForDuplicate let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ 'Member.vicinity.form.duplicate.modal.title' | translate }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="sameAddressFoundPlace">
+            {{ 'Member.vicinity.form.duplicate.modal.message' | translate:{'shopTitle': sameAddressFoundPlace.title} }}
+            <p>{{ 'Member.vicinity.form.duplicate.modal.other' | translate }}</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('copy-from-existing')">
+            {{ 'Member.vicinity.form.duplicate.modal.btn.reinit' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('another-shop')">
+            {{ 'Member.vicinity.form.duplicate.modal.btn.proceed' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('cancel')">
+            {{ 'Member.vicinity.form.duplicate.modal.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+<ng-template #modalAssoExtraForm let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title" id="modal-basic-title">{{ 'Association.form.extra.modal.title' | translate }}</h5>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div [hidden]="!showModalAssoWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ modalAssoWarningMessage | translate }}
+            <button (click)="showModalAssoWarningMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <form>
+            <div class="form-row">
+                <div class="form-group col-md-12">
+                    <ng-select name="assoGuestContacts" [addTag]="true" [addTagText]="getAddAssoGuestItemText()"
+                        notFoundText="{{ 'Association.form.extra.guests.notFoundText' | translate}}" [closeOnSelect]="true"
+                        [clearable]="false" [selectOnTab]="true" [(ngModel)]="assoGuestContacts" (ngModelChange)="controlGuestEmailValidity()"
+                        [multiple]="true" placeholder="{{ 'Association.form.extra.guests.placeholder' | translate }}" >
+                    </ng-select>
+                    <div *ngIf="assoGuestContacts.length && assoExtraFormInvalid" class="invalid-form-extra">
+                        {{ 'Association.form.extra.guests.min.required' | translate }}
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" [disabled]="assoExtraFormInvalid || modalAssoRequesting" 
+            [ngClass]="{'btn-action-disabled': assoExtraFormInvalid || modalAssoRequesting}" (click)="submitAssoGuestContacts()">
+            <span *ngIf="modalAssoRequesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Association.form.extra.btn.submit' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" [disabled]="modalAssoRequesting"
+            [ngClass]="{'btn-action-disabled': modalAssoRequesting}" (click)="modal.close('cancel')">
+            {{ 'Association.form.extra.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+<ng-template #modalInviteMerchant let-modal>
+    <div class="modal-header">
+        <h4 class="modal-title" id="modal-basic-title">{{ 'Invitation.merchant.confirmation.modal.title' | translate }}</h4>
+        <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+          <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div>{{ 'Invitation.merchant.confirmation.modal.question' | translate }}</div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-primary" [disabled]="invitationProcessing" 
+            [ngClass]="{'btn-action-disabled': invitationProcessing}" (click)="inviteToRegister()">
+            <span *ngIf="invitationProcessing" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Invitation.merchant.confirmation.modal.btn.submit' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" [disabled]="invitationProcessing"
+            [ngClass]="{'btn-action-disabled': invitationProcessing}" (click)="modal.close('cancel')">
+            {{ 'Invitation.merchant.confirmation.modal.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<form class="form-address" *ngIf="place" >
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="title" class="sr-only"><!-- nothing --></label>
+            <input type="text" name="title" id="title" class="form-control" placeholder="{{ 'Member.vicinity.form.title.placeholder' | translate }}"
+                [(ngModel)]="place.title" (ngModelChange)="unchanged = false" required [readonly]="isUnchangeable()" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12" >
+            <geoapify-geocoder-autocomplete *ngIf="!isAddressUnchangeable()"
+                [lang]="currentLangCode"
+                [type]="searchLocation.type"
+                [value]="place.address"
+                [placeholder]="getTextSearchAddressPlaceholder()"
+                [skipIcons]="searchLocation.skipIcons"
+                [skipDetails]="searchLocation.skipDetails"
+                [biasByCountryCode]="searchLocation.biasByCountryCode"
+                (placeSelect)="retrieveAddressCoords($event)">
+            </geoapify-geocoder-autocomplete>
+
+            <input #searchAddress *ngIf="isAddressUnchangeable()" type="text" name="address" id="address" class="form-control form-control-sm" placeholder="{{ 'Member.vicinity.form.address.placeholder' | translate }}"
+                [(ngModel)]="place.address" (ngModelChange)="unchanged = false" required [readonly]="true" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <ng-select  name="categories" [items]="filteredOptionCategories" [compareWith]="isCategorySelected" bindLabel="label" [multiple]="true"
+                        [closeOnSelect]="true" [clearable]=false [(ngModel)]="place.categories" (ngModelChange)="unchanged = false" 
+                        [searchable]="true" notFoundText="{{ 'Member.vicinity.form.categ.notFoundText' | translate }}"
+                        placeholder="{{ 'Member.vicinity.form.categ.placeholder' | translate }}" [readonly]="isCategoryUnchangeable()">
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-auto col-11 mb-3">
+            <ng-select  name="contacts" [addTag]="true" [addTagText]="getAddContactItemText()" notFoundText="{{ 'Member.vicinity.form.contacts.notFoundText' | translate}}"
+                        [closeOnSelect]="true" [selectOnTab]="true" [(ngModel)]="place.contacts" (ngModelChange)="unchanged = false" (remove)="checkContactRemoval($event)"
+                        [multiple]="true" [clearable]="false" placeholder="{{ 'Member.vicinity.form.contacts.placeholder' | translate }}" [readonly]="isUnchangeable()">
+            </ng-select>
+        </div>
+        <div class="col-auto col-1 mb-3 no-padding-left">
+            <i class="fas fa-copy fa-2x" [ngClass]="{'copy-enabled': hasContactsToCopy(), 'copy-disabled': !hasContactsToCopy()}"
+                [cdkCopyToClipboard]="infoContactsToCopy()" (click)="markContactsAsCopied()">
+            </i>
+            <span [hidden]="isItemUnsaved() || !place.hasValidEmail || invitationProcessing">&nbsp;
+                <i [hidden]="place.merchantRegistered" class="far fa-user fa-2x" 
+                     [ngClass]="{'invitation-enabled': !isOfflineMode(), 'btn-action-disabled': isOfflineMode()}" (click)="invitationToConfirm()">
+                </i>
+                <i [hidden]="!place.merchantRegistered" class="fas fa-user-check fa-2x invitation-disabled"></i>
+            </span>
+            <span [hidden]="!invitationProcessing" class="spinner-border text-info" role="status">
+                <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+            </span>
+        </div>
+    </div>
+    <div class="form-row text-left">
+        <div class="col-6 col-md-3 col-lg-2 mb-2">
+            <label for="orderInList" class="col-form-label col-form-label-sm">{{ 'Member.vicinity.form.order.label' | translate }}</label>
+        </div>
+        <div class="col-6 col-md-3 col-lg-2 mb-2">
+            <div class="input-group">
+                <div class="input-group-prepend">
+                    <span class="input-group-text item-clickable" (click)="decrementOrderInList(); unchanged = false">
+                        <i class="fas fa-minus"></i>
+                    </span>
+                </div>
+                <input type="number" class="form-control form-control-sm" min="1" max="maxOrderInList" step="1" name="orderInList" id="orderInList"
+                        [(ngModel)]="place.orderInList" (ngModelChange)="unchanged = false" /> <!-- type="range" -->
+                <div class="input-group-append">
+                    <span class="input-group-text item-clickable" (click)="incrementOrderInList(); unchanged = false">
+                        <i class="fas fa-plus"></i>
+                    </span>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-auto col-11 mb-3">
+            <ng-select  name="flags" [addTag]="true" [addTagText]="getAddFlagItemText()" notFoundText="{{ 'Member.vicinity.form.flags.notFoundText' | translate}}"
+                        [closeOnSelect]="true" [clearable]="false" [selectOnTab]="true" [(ngModel)]="place.flags" (ngModelChange)="unchanged = false"
+                        [multiple]="true" placeholder="{{ 'Member.vicinity.form.flags.placeholder' | translate }}" >
+            </ng-select>
+        </div>
+        <div class="col-auto col-1 mb-3 no-padding-left">
+            <i class="fas fa-copy fa-2x" [ngClass]="{'copy-enabled': hasFlagsToCopy(), 'copy-disabled': !hasFlagsToCopy()}"
+                [cdkCopyToClipboard]="infoFlagsToCopy()" (click)="markFlagsAsCopied()">
+            </i>
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="isPushPlaceDisabled()" class="btn btn-sm btn-primary " (click)="pushPlace()"
+        [ngClass]="{'btn-action-disabled': isPushPlaceDisabled(), 'btn-action-enabled': !isPushPlaceDisabled()}">
+        <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.vicinity.form.btn.submit' | translate }}
+    </button>&nbsp;&nbsp;
+    <button type="button" [disabled]="requesting" class="btn btn-sm btn-secondary" (click)="backToParent()">
+        {{ 'Member.address.form.btn.close' | translate }}
+    </button>&nbsp;&nbsp;
+    <button type="button" [disabled]="!isLogicalRemovalAllowed()" class="btn btn-sm btn-danger" (click)="removePlace()"
+        [ngClass]="{'btn-action-disabled': !isLogicalRemovalAllowed(), 'btn-action-enabled': isLogicalRemovalAllowed()}">
+        <i class="fas fa-times"></i>&nbsp;{{ 'Member.address.form.btn.remove' | translate }}
+    </button>
+</form>

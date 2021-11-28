@@ -1,0 +1,8 @@
+#map {
+    height: 75vh;
+    padding: 0;
+    width: 100%
+}
+.map-overlay {
+    z-index: 800; /* plage 401-999 pour se situer entre map et controls, > 1000 pour se positioner au-dessus de tout */
+}

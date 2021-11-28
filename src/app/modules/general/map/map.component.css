@@ -1,0 +1,49 @@
+.welcome-title {
+    font-size: 1.8rem;
+}
+
+.card-deck {
+    margin-bottom: 100px;
+}
+.card-width-minimized-margin {
+    margin-right: 10px;
+    margin-left: 10px;
+}
+
+#map {
+    /*height: 600px;*/
+    height: 75vh;
+    /*height: 100%;*/
+    padding: 0;
+    width: 100%
+}
+.map-overlay {
+    z-index: 800; /* plage 401-999 pour se situer entre map et controls, > 1000 pour se positioner au-dessus de tout */
+}
+.btn-color-custom {
+    color: darkslategray;
+    background-color: #f4f4f4;
+    border-color: lightgray;
+}
+.btn-color-emphasize {
+    color: firebrick;
+    background-color: #f4f4f4;
+    border-color: coral; /* darkorange; lightgray; #007bff */
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.shift-from-left {
+    left: 45px;
+    top: 5px;
+}
+/*.custom-closer {
+    --fa-secondary-opacity: 1.0;
+    --fa-primary-color: rgb(4, 56, 161);
+    --fa-secondary-color: rgb(108, 108, 108);
+}*/
+
+.home-message-section {
+    margin-bottom: 25px;
+}

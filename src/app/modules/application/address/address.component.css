@@ -1,0 +1,49 @@
+.btn-action-enabled {
+    color: #007bff;
+    cursor: pointer;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+
+.btn-first-position {
+    position: absolute;
+    bottom: 20%;
+    left: 0%;
+}
+.btn-second-position {
+    position: absolute;
+    bottom: 20%;
+    left: 30%;
+}
+.btn-third-position {
+    position: absolute;
+    bottom: 20%;
+    left: 60%;
+}
+
+.item-selectable {
+    cursor: pointer;
+}
+
+.disable-text-selection {
+    -moz-user-select: none; /* Firefox */
+    -ms-user-select: none; /* Internet Explorer */
+    -khtml-user-select: none; /* KHTML browsers (e.g. Konqueror) */
+    -webkit-user-select: none; /* Chrome, Safari, and Opera */
+    -webkit-touch-callout: none; /* Disable Android and iOS callouts */
+    user-select:none;
+}
+
+.badge-color-custom {
+    color: white;
+    background-color: cadetblue;
+}
+.table-badge-display {
+    display: inline-table; /* à cause de pb sur mobile (petit écran) */
+    font-weight: normal;
+}
+.no-pointer {
+    cursor: default;
+}

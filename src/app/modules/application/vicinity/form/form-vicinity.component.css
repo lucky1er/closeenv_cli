@@ -1,0 +1,50 @@
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+/* Firefox */
+input[type=number] {
+    -moz-appearance: textfield;
+}
+
+.item-clickable {
+    cursor: pointer;
+}
+.copy-enabled {
+    color: #3F729B;
+    cursor: pointer;
+}
+.copy-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.invitation-enabled {
+    color: #3F729B;
+    cursor: pointer;
+}
+.invitation-disabled {
+    color: green;
+    cursor: not-allowed;
+}
+
+.no-padding-left {
+    padding-left: 0;
+}
+
+.modal-xxl .modal-lg {
+    max-width: 90%;
+}
+
+.invalid-form-extra {
+    width: 100%;
+    margin-top: .25rem;
+    font-size: 80%;
+    color: #dc3545;
+}

@@ -1,0 +1,10 @@
+.btn-action-enabled {
+    cursor: pointer;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.custom-danger {
+    color: #dc3545 !important;
+}

@@ -1,0 +1,59 @@
+# Node.js with Angular
+# Build a Node.js project that uses Angular.
+# Add steps that analyze code, save build artifacts, deploy, and more:
+# https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
+
+trigger:
+  branches:
+    include:
+    - master
+    - refs/tags/*
+  tags:
+    include:
+      - v*
+    exclude:
+      - v0.0.0
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+steps:
+- checkout: self
+  persistCredentials: true
+
+- task: NodeTool@0
+  inputs:
+    versionSpec: '10.x'
+  displayName: 'Install Node.js'
+
+- script: |
+    git config --global user.email "luc.guyon@free.fr" 
+    git config --global user.name "Luc Guyon"
+    git config push.followTags true
+    VERSION_TAG=`git tag --sort=-creatordate | head -1` && echo "##vso[task.setvariable variable=VERSION_TAG]$VERSION_TAG"
+  displayName: 'git tag recovery (the last one)'
+  name: GitEnv
+
+# Now variable $(VERSION_TAG) is available to downstream steps within the same job
+
+- script: |
+    npm install
+    npm run lint
+    npm run test-headless
+    npm run build-prod
+    npm run build:ssr
+    echo "Version Tag Control :  $(VERSION_TAG)  and  $(Build.SourceBranchName)"
+  displayName: 'npm install and build'
+  condition: succeeded()
+
+- publish: $(System.DefaultWorkingDirectory)/dist
+  displayName: 'publish artifact (dist)'
+  condition: succeeded()
+  artifact: 'WebApp_$(VERSION_TAG)'
+
+- task: ArchiveFiles@2
+  displayName: 'archive for publishing to a web app'
+  condition: and(succeeded(), eq(variables['VERSION_TAG'], variables['Build.SourceBranchName']))
+  inputs:
+    rootFolderOrFile: '$(System.DefaultWorkingDirectory)'
+    includeRootFolder: false

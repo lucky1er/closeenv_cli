@@ -1,0 +1,60 @@
+<div class="card-deck">
+    <!-- border-secondary bg-light text-center -->
+    <div class="card col-md-6 card-width-minimized-margin">
+        <div class="card-body">
+            <h5 class="card-title">{{ 'About.local.title' | translate }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ 'About.local.subtitle' | translate }}</h6>
+            <p class="card-text">{{ 'About.local.paragraph.text-1' | translate }}</p>
+            <p class="card-text"><em>{{ 'About.local.paragraph.app' | translate }}</em>&nbsp;&nbsp;{{ 'About.local.paragraph.text-2' | translate }}</p>
+        </div>
+    </div>
+    <div class="card col-md-6 card-width-minimized-margin">
+        <div class="card-body">
+            <h5 class="card-title">{{ 'About.social.bonding.title' | translate }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ 'About.social.bonding.subtitle' | translate }}</h6>
+            <p class="card-text">{{ 'About.social.bonding.paragraph.text-1' | translate }}</p>
+            <p class="card-text">
+                {{ 'About.social.bonding.paragraph.text-2.pre' | translate }}
+                <a [routerLink]="['/association']" [queryParams]="{lang: addonTranslator.currentLgCode}" >{{ 'About.social.bonding.paragraph.text-2.asso' | translate }}</a>
+                {{ 'About.social.bonding.paragraph.text-2.after' | translate }}
+            </p>
+        </div>
+    </div>
+</div>
+<div class="card-deck detach-from-above">
+    <div class="card col-md-12 card-width-minimized-margin">
+        <div class="card-body">
+            <h5 class="card-title">{{ 'About.community.title' | translate }}</h5>
+            <h6 class="card-subtitle mb-2 text-muted">{{ 'About.community.subtitle' | translate }}</h6>
+            <p class="card-text">
+                {{ 'About.community.paragraph.text' | translate }}<br/>{{ 'About.community.paragraph.ending.pre' | translate }}
+                <B><em>{{ 'About.community.paragraph.ending.app' | translate }}</em></B>&nbsp;{{ 'About.community.paragraph.ending.after' | translate }}
+            </p>
+            <blockquote class="blockquote mb-0">
+                <p class="height-minimized-margin"><i class="fas fa-quote-left"></i>&nbsp;&nbsp;{{ 'About.community.paragraph.quote' | translate }}</p>
+                <footer class="blockquote-footer">{{ 'About.community.paragraph.quote.from' | translate }}&nbsp;&nbsp;<cite title="">{{ 'About.community.paragraph.quote.source' | translate }}</cite></footer>
+            </blockquote>
+        </div>
+    </div>
+</div>
+<div class="card-deck detach-from-above">
+    <div class="card border-light col-md-9">
+        <div class="card-body minimized-padding">
+            <a href="https://www.geoapify.com/address-autocomplete" target="_blank" class="display-flex">
+                <img src="./assets/params/images/partners/geoapify.png" class="img-fluid" alt="Logo Geoapify">
+            </a>
+        </div>
+    </div>
+    <div class="card border-light col-md-3">
+        <div class="card-body minimized-padding">
+            <div>
+                <a href="https://www.openstreetmap.org/copyright/en" target="_blank">
+                    <img src="./assets/params/images/partners/public-images-osm_logo.png" width="120" height="120" alt="Logo OpenStreetMap">
+                </a>
+                <a href="https://www.openstreetmap.org/fixthemap" target="_blank">
+                    <span class="col-6 osm-text">OSM</span>
+                </a>
+            </div>
+        </div>
+    </div>
+</div>

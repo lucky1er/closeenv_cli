@@ -1,0 +1,8 @@
+{
+    "heerApiSpecs": "v1/discover?q=shop&_ontology=shop&in=circle",
+    "heerApiRadius": 9000,
+    "heerApiLimit": 20,
+    "toleranceMargin": 6000,
+    "allowMerchantSubscription": true,
+    "patchUser": false
+}

@@ -1,0 +1,73 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form class="form-search">
+    <div class="form-row">
+        <div class="form-group col-md-12">
+            <label for="select-category" class="sr-only"></label>
+            <input type="text" id="select-category" class="form-control" [(ngModel)]="targetCategory" [ngModelOptions]="{standalone: true}"
+                [ngbTypeahead]="searchForCateg" [inputFormatter]="formatter" [resultFormatter]="formatter" [editable]='false'
+                placeholder="{{ 'Member.vicinity.modal.search.categ.placeholder' | translate }}" required />
+        </div>
+    </div>
+    <!--div class="form-row">
+        <div class="form-group col-md-12">
+            <ng-select  name="category" [items]="optionCategories"
+                        [searchable]="true" [multiple]="false" [editableSearchTerm]="true"
+                        [closeOnSelect]="true" [clearable]=false [(ngModel)]="targetCategory"
+                        notFoundText="{{ 'Member.vicinity.form.categ.notFoundText' | translate }}"
+                        placeholder="{{ 'Member.vicinity.modal.search.categ.placeholder' | translate }}"
+                        (focus)="onCategorySelectFocus()" (search)="onCategorySelectSearch($event)" >
+                    !-- [(ngModel)]="target.category" (ngModelChange)="temp0 = false"
+                    [searchable]="true" appendTo="body" style="position:relative; width: 100%;" [virtualScroll]="true"
+                    [compareWith]="isCategorySelected" bindLabel="label" bindValue="code" [multiple]="true" --
+            </ng-select>
+        !-- ng-select  name="categories" [items]="optionCategories" [compareWith]="isCategorySelected" bindLabel="label" [multiple]="true"
+                        [closeOnSelect]="true" [clearable]=false [(ngModel)]="place.categories" (ngModelChange)="unchanged = false"
+                        [searchable]="true" notFoundText="{{ 'Member.vicinity.form.categ.notFoundText' | translate }}"
+                        placeholder="{{ 'Member.vicinity.form.categ.placeholder' | translate }}" [readonly]="isUnchangeable()">
+            </ng-select --
+        </div>
+    </div-->
+    <button type="submit" [disabled]="requesting || !categoryTargeted()" class="btn btn-sm btn-primary " (click)="searchPlaces()"
+        [ngClass]="{'btn-action-disabled': requesting || !categoryTargeted()}">
+        <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.vicinity.modal.search.btn.submit' | translate }}
+    </button>
+</form>
+<hr/>
+<div *ngIf="!searchResultPlaces">
+    <br/><br/><br/>
+    <div [hidden]="!requesting" class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+</div>
+<div *ngIf="searchResultPlaces" class="list-group">
+    <!-- résultat de la recherche -->
+    <div *ngFor="let itemPlace of searchResultPlaces; index as ind;"
+        class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding">
+        <div class="d-flex w-100 justify-content-between">
+            <div class="col-3 col-sm-3 col-md-3 text-left">
+                <small>{{ itemPlace.title }}&nbsp;</small>
+                <button [disabled]="!itemPlace.contacts || !itemPlace.contacts.length" type="button" class="btn btn-outline-secondary no-look-like-btn"
+                    placement="right" container="body" ngbTooltip="{{ getTooltipTextContacts(itemPlace) }}">
+                    <i class="far fa-id-card" [ngClass]="{'contact-icon-color': itemPlace.contacts && itemPlace.contacts.length}"></i>
+                </button>
+            </div>
+            <div class="col-5 col-sm-5 col-md-5 just-little-left-padding"><small>{{ itemPlace.address }}</small></div>
+            <div class="col-3 col-sm-3 col-md-3 text-right"><small>{{ getKilometDistance(itemPlace) }}</small></div>
+            <div class="col-1 col-sm-1 col-md-1 no-padding-horizontally">
+                <small>
+                    <i class="far fa-edit fa-2x" [ngClass]="{'btn-action-enabled': isPlaceFromExisting(itemPlace), 'btn-action-disabled': !isPlaceFromExisting(itemPlace)}"
+                        (click)="backListForUpdating(itemPlace)"></i>&nbsp;
+                    <i class="fas fa-user-plus fa-2x" [ngClass]="{'btn-action-enabled': !isPlaceFromExisting(itemPlace), 'btn-action-disabled': isPlaceFromExisting(itemPlace)}"
+                        (click)="backListForAdding(itemPlace)"></i>
+                </small>
+            </div>
+        </div>
+    </div>
+    <div *ngIf="!searchResultPlaces.length">{{ 'Member.vicinity.modal.search.result.empty' | translate }}</div>
+</div>

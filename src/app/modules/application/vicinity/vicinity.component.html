@@ -1,0 +1,149 @@
+<div>
+    <ng-template #modalSpecificSearch let-modal>
+        <div class="modal-header">
+            <h4 class="modal-title" id="modal-basic-title">{{ 'Member.vicinity.modal.search.title' | translate }}</h4>
+            <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div class="modal-body">
+            <app-search-vicinity
+                [baseCategories]="baseCategories" [lastSearchCategoryCode]="lastSearchCriteria" [startingPoint]="this.coordsAddress" [existingPlaces]="unfilteredPlaces"
+                (validatedSearchCategogy)="keepLastSearch($event)" (closeSearchForUpdating)="findPlaceToUpdate($event)" (closeSearchForAdding)="addAnotherPlace($event)">
+            </app-search-vicinity>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-outline-dark" (click)="modal.close('close')">
+                {{ 'Member.vicinity.modal.search.btn.close' | translate }}
+            </button>
+        </div>
+    </ng-template>
+
+    <div class="text-center" [hidden]="!loading && !showWarningMessage">
+        <div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ warningMessage | translate }}
+            <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="!loading" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+    </div>
+
+    <div class="" *ngIf="showList">
+        <div class="row justify-content-end">
+            <div class="col-8">
+                <h6 class="display-inline-flex">
+                    <div class="btn-group-vertical btn-group-sm btn-group-toggle" ngbRadioGroup name="switch">
+                        <button type="button" class="btn btn-light" [ngClass]="{'active': listProfessionals(), 'unselected': !listProfessionals()}" 
+                                (click)="changeActiveListType(1)">{{ 'Member.vicinity.list.switch.professionals' | translate }}</button>
+                        <button [disabled]="!individualsLookingFors.length" type="button" class="btn btn-light" [ngClass]="{'active': listIndividuals(), 'unselected': !listIndividuals()}" 
+                                (click)="changeActiveListType(2)">{{ 'Member.vicinity.list.switch.individuals' | translate }}</button>
+                    </div>
+                    <div>
+                        {{ 'Member.vicinity.list.title' | translate }}<br/>&nbsp;<em>{{ getLabelAddress() }}</em>
+                    </div>
+                </h6>
+            </div>
+            <div class="col-4 fa-lg" [hidden]="!listProfessionals()">
+                <i class="far fa-edit btn-first-position" [ngClass]="{'btn-action-enabled': selectedPlaceId !== '', 'btn-action-disabled': selectedPlaceId === ''}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square" (click)="updatePlace()"></i>&nbsp;
+                <i class="fas fa-user-plus btn-second-position" [ngClass]="{'btn-action-enabled': addPlaceAllowed(), 'btn-action-disabled': !addPlaceAllowed()}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square" (click)="addPlace()"></i>&nbsp;
+                <i class="fas fa-map-marked-alt btn-third-position btn-action-enabled" data-fa-transform="shrink-6" data-fa-mask="fas fa-square"
+                    (click)="doShowMap()"></i>
+            </div>
+            <div class="col-4 fa-lg" [hidden]="!listIndividuals()">
+                <i class="far fa-edit btn-first-position btn-invisible" data-fa-transform="shrink-6" data-fa-mask="fas fa-square"></i>&nbsp;
+                <i class="fas fa-user-plus btn-second-position btn-invisible" data-fa-transform="shrink-6" data-fa-mask="fas fa-square"></i>&nbsp;
+                <i class="fas fa-map-marked-alt btn-third-position btn-invisible" data-fa-transform="shrink-6" data-fa-mask="fas fa-square"></i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" *ngIf="showList && listProfessionals()">
+        <div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ successMessage | translate }}
+            <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="!showInfoMessage" class="alert alert-info alert-dismissible fade show" role="alert">
+            {{ infoMessage | translate }}
+            <button (click)="showInfoMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <a class="btn btn-block btn-sm thinner-line-height" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"
+            [ngClass]="{'btn-light': !filterNotAllSelected(), 'btn-filter-chk': filterNotAllSelected()}">{{ 'Member.vicinity.list.filter.label' | translate }}
+        </a>
+        <div class="collapse" id="collapseFilter">
+            <div class="row">
+                <div class="form-check">
+                    <small><i class="fas fa-search-plus fa-2x btn-action-enabled" (click)="openSpecificSearch()"></i></small>
+                </div>
+                <div class="form-check form-check-inline custom-control custom-checkbox" *ngFor="let filterCateg of filterCategories; index as ind;">
+                    <input class="form-check-input custom-control-input" type="checkbox" id="filter-{{ filterCateg.code }}" [checked]="filterCateg.selected"
+                        (change)="queueChangeFilter($event, ind)" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line" for="filter-{{ filterCateg.code }}">{{ filterCateg.label }}</label>
+                </div>
+                <div class="form-check-inline">
+                    <div class="col-6 col-md-4 col-lg-3 no-padding-right">
+                        <input type="range" class="form-control-range custom-range" min="6" max="15" id="nbItemsPerPage" [ngModel]="nbItemsPerPage" (ngModelChange)="queueChangeIPP($event)"/>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-6 minimized-padding-left">
+                        <label class="col-form-label-sm little-bit-more-down" for="nbItemsPerPage"><B>{{nbItemsPerPage}}</B>&nbsp;{{ 'Member.vicinity.list.range.items.per.page' | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="activePagePlaces" class="list-group" role="list" id="list-focus"
+            (keydown.arrowup)="onKeydown($event)" (keydown.arrowdown)="onKeydown($event)" (keydown.enter)="onKeydown($event)">
+            <!-- (keydown)="onKeydown($event)"  tabindex="0"  cdkTrapFocus -->
+            <app-place-item #itemPlace *ngFor="let place of activePagePlaces; index as ind;" [itemPlace]="place" (click)="selectListItem(ind)"></app-place-item>
+        </div>
+        <nav aria-label="page-navigation" class="margin-previous">
+            <div class="d-flex justify-content-around flex-wrap">
+                <ul class="pagination d-sm-inline-flex height-minimized-margin">
+                    <li class="page-item item-selectable" [ngClass]="{'disabled': pageActive < 2}" (click)="decrementPageActive()">
+                        <span class="page-link"><i class="fas fa-angle-double-left"></i>{{ 'Member.vicinity.list.page.previous' | translate }}</span>
+                    </li>
+                    <li class="page-item item-selectable" *ngFor="let pageNumber of getPages()" [ngClass]="{'active': pageActive == pageNumber}" (click)="gotoPageActive(pageNumber)">
+                        <span class="page-link">{{ pageNumber | number }}</span>
+                    </li>
+                    <li class="page-item item-selectable" [ngClass]="{'disabled': pageActive >= totalPagesNumber()}" (click)="incrementPageActive()">
+                        <span class="page-link">{{ 'Member.vicinity.list.page.next' | translate }}<i class="fas fa-angle-double-right"></i></span>
+                    </li>
+                </ul>
+                <div class="ml-auto p-2">
+                    <button type="button" class="btn btn-outline-primary my-2 my-sm-0" [ngClass]="{'btn-action-disabled': savePlacesDisabled()}" 
+                        [disabled]="savePlacesDisabled()" (click)="savePlaces()">
+                        <span *ngIf="placesSaving" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.vicinity.list.btn.save' | translate }}
+                    </button>
+                </div>
+            </div>
+        </nav>
+    </div>
+
+    <div class="card" *ngIf="showList && listIndividuals()">
+        <!-- composant listant les éléments du tableau individualsLookingFors -->
+        <app-looking-for [unfilteredLookingFors]="individualsLookingFors" [currentUserId]="currentUserId" [iriRoot]="iriRoot"></app-looking-for>
+    </div>
+
+    <div class="card" *ngIf="showForm">
+        <h4 class="card-header">{{ 'Member.vicinity.form.header' | translate }}</h4>
+        <div class="card-body">
+            <app-form-vicinity [place]="placeToForm" [optionCategories]="addonTranslator.mapCodeLabelWithDefaultTranslation(baseCategories)" 
+                [startingPoint]="this.coordsAddress" [user]="userConnected" [currentLangCode]="addonTranslator.getTranslationDefaultLang()"
+                [maxOrderInList]="maxTopOrder" [existingPlaces]="unfilteredPlaces"
+                (placeValidated)="placeChanges($event)" (closeWithoutValidation)="doShowList()">
+            </app-form-vicinity>
+        </div>
+    </div>
+
+    <div *ngIf="showMap">
+        <app-map-vicinity [centralCoords]="coordsAddress" [closePlaces]="places" (closeComponent)="doShowList()"></app-map-vicinity>
+    </div>
+</div>

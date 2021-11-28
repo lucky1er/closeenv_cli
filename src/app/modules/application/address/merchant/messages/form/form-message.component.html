@@ -1,0 +1,171 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage | translate }}
+    <p [hidden]="!showSuccessAdditionalInfo">{{ successAdditionalInfo | translate }}</p>
+    <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<ng-template #removeConfirmModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ 'Merchant.shop.message.form.remove.confirm.modal.title' | translate }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div>
+            {{ 'Merchant.shop.message.form.remove.confirm.modal.message' | translate }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('confirm')">
+            {{ 'Merchant.shop.message.form.remove.confirm.modal.btn.ok' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('cancel')">
+            {{ 'Merchant.shop.message.form.remove.confirm.modal.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalDeliveryReport let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ 'Merchant.shop.message.modal.delivery.title' | translate }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div [hidden]="!reportLoading" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+        <div [hidden]="reportLoading" class="list-group">
+            <div *ngFor="let item of deliveryItems; index as ind;"
+                class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="col-3 col-sm-3 col-md-3 no-padding-horizontally text-left"><small>{{ item.anonymizedUsername }}</small></div>
+                    <div class="col-3 col-sm-3 col-md-3 no-padding-horizontally"><small>{{ item.deliveryDate | date:'shortDate':undefined:locale }}</small></div>
+                    <div class="col-3 col-sm-3 col-md-3 no-padding-horizontally"><small>{{ getTextTypeDelivery(item) }}</small></div>
+                    <div class="col-2 col-sm-2 col-md-2 no-padding-horizontally">
+                        <button *ngIf="hasMailingError(item)" type="button" class="btn btn-outline-secondary no-look-like-btn"
+                            placement="left" container="body" ngbTooltip="{{ getTooltipTextMailingError(item) }}">
+                            <i class="fas fa-exclamation-triangle error-icon-color"></i>
+                        </button>
+                        <small *ngIf="!hasMailingError(item)"><i class="fas fa-check-circle"></i></small>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('ok')">
+            {{ 'Merchant.shop.message.modal.delivery.btn.close' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<div class="card" *ngIf="message">
+    <h4 class="card-header"><B>{{ place.title }}</B>&nbsp;-&nbsp;{{ 'Merchant.shop.message.form.header' | translate }}&nbsp;[{{message.id}}]</h4>
+    <div class="card-body">
+        <form class="form-message" [formGroup]="messageForm" (ngSubmit)="saveMessage()">
+            <div class="form-row">
+                <div class="form-group col-11 col-md-11 col-sm-11">
+                    <label for="label" class="sr-only">{{ 'Merchant.shop.message.label.form.label' | translate }}</label>
+                    <input type="text" formControlName="label" class="form-control" placeholder="{{ 'Merchant.shop.message.label.form.label' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.label.errors }" />
+                    <div *ngIf="submitted && f.label.errors" class="invalid-feedback">
+                        <div *ngIf="f.label.errors.required">{{ 'Merchant.shop.message.label.form.required' | translate }}</div>
+                        <div *ngIf="f.label.errors.minlength">{{ 'Merchant.shop.message.label.form.minLength' | translate:{'requiredLength':f.label.errors.minlength.requiredLength} }}</div>
+                        <div *ngIf="f.label.errors.maxlength">{{ 'Merchant.shop.message.label.form.maxLength' | translate:{'limitedLength':f.label.errors.maxlength.requiredLength} }}</div>
+                    </div>
+                </div>
+                <div class="form-group col-1 col-md-1 col-sm-1">
+                    <input type="text" formControlName="languageCode" class="form-control" [readonly]="true" />
+                </div>
+            </div>
+            <div class="form-group row">
+                <label for="validFrom" class="col-5 col-md-2 col-sm-5 col-form-label">{{ 'Merchant.shop.message.validFrom.form.label' | translate }}</label>
+                <div class="col-7 col-lg-2 col-md-4 col-sm-7">
+                    <input type="date" formControlName="validFrom" id="validFrom" class="form-control input-type-date-padding" placeholder="{{ 'Merchant.shop.message.validFrom.form.label' | translate }}"
+                        [min]="minDateFrom" [ngClass]="{'is-invalid': submitted && (f.validFrom.errors || hasErrorFromDateMin())}" />
+                    <div *ngIf="submitted && (f.validFrom.errors || hasErrorFromDateMin())" class="invalid-feedback">
+                        <div *ngIf="f.validFrom.errors && f.validFrom.errors.required">{{ 'Merchant.shop.message.validFrom.form.required' | translate }}</div>
+                        <div *ngIf="hasErrorFromDateMin()">{{ 'Merchant.shop.message.validFrom.form.min' | translate }}</div>
+                    </div>
+                </div>
+                
+                <label for="validTo" class="col-5 col-md-1 col-sm-5 col-form-label">{{ 'Merchant.shop.message.validTo.form.label' | translate }}</label>
+                <div class="col-7 col-lg-2 col-md-4 col-sm-7">
+                    <input type="date" formControlName="validTo" class="form-control input-type-date-padding" placeholder="{{ 'Merchant.shop.message.validTo.form.label' | translate }}"
+                        [ngClass]="{'is-invalid': submitted && (f.validTo.errors || hasErrorInconsistentDates())}" />
+                    <div *ngIf="submitted && (f.validTo.errors || hasErrorInconsistentDates())" class="invalid-feedback">
+                        <div *ngIf="f.validTo.errors && f.validTo.errors.required">{{ 'Merchant.shop.message.validTo.form.required' | translate }}</div>
+                        <div *ngIf="hasErrorInconsistentDates()">{{ 'Merchant.shop.message.validTo.form.inconsistent' | translate }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <editor id="{{editorUniqid}}"
+                        [init]="editorConfig"        
+                        [formControlName]="messageBodyFormFieldName"
+                        (onInit)="onEditorReady($event)">
+                    <!--
+                        initialValue="{{message.text}}"
+                        [(ngModel)]="messageBody"
+                        (onChange)="onChangeMessageBody($event)"
+                        [disabled]="!messageEditable()"
+                        [inline]="true"
+                    -->
+                </editor>
+            </div>
+            <div *ngIf="submitted && hasErrorMessageText()" class="custom-invalid-text form-group">
+                <div>{{ 'Merchant.shop.message.text.form.minLength' | translate:{'requiredLength': minRequiredWordsCount} }}</div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-6 col-md-6 text-left mb-3">
+                  <div class="form-check custom-checkbox">
+                    <input type="checkbox" formControlName="toBeSent" class="form-check-input custom-control-input"
+                        [ngClass]="{ 'is-invalid': submitted && f.toBeSent.errors }" id="toBeSent" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line keep-original-color" for="toBeSent">
+                        {{ 'Merchant.shop.message.toBeSent.form.label' | translate }}
+                    </label>
+                  </div>
+                </div>
+                <div class="col-lg-6 col-md-6 text-left mb-3">
+                  <div class="form-check custom-checkbox">
+                    <input type="checkbox" formControlName="lockedForSending" class="form-check-input custom-control-input"
+                        [ngClass]="{ 'is-invalid': submitted && f.lockedForSending.errors }" id="lockedForSending" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line keep-original-color" for="lockedForSending">
+                        {{ 'Merchant.shop.message.lockedForSending.form.label' | translate }}
+                    </label>
+                  </div>
+                </div>
+            </div>
+
+            <input formControlName="id" type="hidden" />
+            <input formControlName="shop" type="hidden" />
+            <input formControlName="asso" type="hidden" />
+
+            <button type="submit" [disabled]="requesting || !messageEditable()" class="btn btn-primary"
+                [ngClass]="{'btn-action-disabled': requesting || !messageEditable(), 'btn-action-enabled': !requesting && messageEditable()}">
+                <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Merchant.shop.message.form.btn.submit' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="requesting" class="btn btn-secondary" (click)="backToParent()">
+                {{ 'Merchant.shop.message.form.btn.close' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="!messageAlreadySent()" class="btn btn-info" (click)="showDeliveryReport()"
+                [ngClass]="{'btn-action-disabled': !messageAlreadySent(), 'btn-action-enabled': messageAlreadySent()}" >
+                {{ 'Merchant.shop.message.form.btn.report' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="!messageApiSaved() || !messageEditable()" class="btn btn-danger" (click)="openConfirmModal(removeConfirmModal)"
+                [ngClass]="{'btn-action-disabled': !messageApiSaved() || !messageEditable(), 'btn-action-enabled': messageApiSaved() && messageEditable()}">
+                <i class="fas fa-times"></i>&nbsp;{{ 'Merchant.shop.message.form.btn.remove' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

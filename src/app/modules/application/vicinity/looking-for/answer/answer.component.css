@@ -1,0 +1,4 @@
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}

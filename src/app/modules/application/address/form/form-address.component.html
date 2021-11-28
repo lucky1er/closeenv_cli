@@ -1,0 +1,97 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<ng-template #confirmModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ 'Member.address.form.remove.confirm.modal.title' | translate }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div *ngIf="!isTheOnlyOne">
+            {{ 'Member.address.form.remove.confirm.modal.message' | translate }}
+            <div *ngIf="hasShopMessages() || hasLookingForItems()">
+                <small class="text-muted custom-danger">{{ 'Member.address.form.remove.notice.shop.messages' | translate }}</small>
+            </div>
+        </div>
+        <div *ngIf="isTheOnlyOne">
+            {{ 'Member.address.form.remove.forbidden.onlyOne' | translate }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" *ngIf="!isTheOnlyOne" class="btn btn-outline-dark" (click)="modal.close('confirm')">
+            {{ 'Member.address.form.remove.confirm.modal.btn.ok' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('cancel')">
+            {{ 'Member.address.form.remove.confirm.modal.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+<form class="form-address" *ngIf="address" (ngSubmit)="saveAddress()">
+    <div class="form-row">
+        <div class="form-group col-md-12">
+          <geoapify-geocoder-autocomplete
+              [lang]="currentLangCode"
+              [type]="searchLocation.type"
+              [placeholder]="getTextSearchInputPlaceholder() | translate"
+              [skipIcons]="searchLocation.skipIcons"
+              [skipDetails]="searchLocation.skipDetails"
+              [biasByCountryCode]="searchLocation.biasByCountryCode"
+              (placeSelect)="refreshAddressForm($event)">
+            </geoapify-geocoder-autocomplete>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <label for="label" class="sr-only">{{ 'Signup.form.address' | translate }}</label>
+            <input type="text" name="label" id="label" class="form-control" placeholder="{{ 'Signup.form.address' | translate }}"
+                [ngModel]="address.addressLabel" required readonly="readonly" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="country" class="sr-only">{{ 'Signup.form.country' | translate }}</label>
+            <input type="text" name="country" id="country" class="form-control" placeholder="{{ 'Signup.form.country' | translate }}"
+                [ngModel]="address.country" required readonly="readonly" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-8">
+            <label for="city" class="sr-only">{{ 'Signup.form.city' | translate }}</label>
+            <input type="text" name="city" id="city" class="form-control" placeholder="{{ 'Signup.form.city' | translate }}"
+                [ngModel]="address.city" required readonly="readonly" />
+        </div>
+        <div class="form-group col-md-4">
+            <label for="postCode" class="sr-only">{{ 'Signup.form.postCode' | translate }}</label>
+            <input type="text" name="postCode" id="postCode" class="form-control" placeholder="{{ 'Signup.form.postCode' | translate }}"
+                [ngModel]="address.postCode" required readonly="readonly" />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-md-6">
+            <label for="county" class="sr-only">{{ 'Member.address.form.county' | translate }}</label>
+            <input type="text" name="county" id="county" class="form-control" [ngModel]="address.county" readonly="readonly" />
+        </div>
+        <div class="form-group col-md-6">
+            <label for="administrative" class="sr-only">{{ 'Member.address.form.administrative' | translate }}</label>
+            <input type="text" name="administrative" id="administrative" class="form-control" [ngModel]="address.administrative" readonly="readonly" />
+        </div>
+    </div>
+    <div>
+        <input type="hidden" name="latitude" id="latitude" [ngModel]="address.latitude" />
+        <input type="hidden" name="longitude" id="longitude" [ngModel]="address.longitude" />
+    </div>
+    <button type="submit" [disabled]="requesting || unchanged" class="btn btn-primary"
+        [ngClass]="{'btn-action-disabled': unchanged || address.nbLinkedPlaces, 'btn-action-enabled': !address.nbLinkedPlaces}">
+        <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.address.form.btn.submit' | translate }}
+    </button>&nbsp;&nbsp;
+    <button type="button" [disabled]="requesting" class="btn btn-secondary" (click)="backToParent()">
+        {{ 'Member.address.form.btn.close' | translate }}
+    </button>&nbsp;&nbsp;<!-- removed from button below: [disabled]="!address.nbLinkedPlaces" -->
+    <button type="button" [disabled]="!isAddressIdentified()" class="btn btn-danger" (click)="openConfirmModal(confirmModal)"
+        [ngClass]="{'btn-action-disabled': !isAddressIdentified(), 'btn-action-enabled': isAddressIdentified()}">
+        <i class="fas fa-times"></i>&nbsp;{{ 'Member.address.form.btn.remove' | translate }}
+    </button>
+</form>

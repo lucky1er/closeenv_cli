@@ -1,0 +1,16 @@
+{
+    "/hereapi-acc-dev/*": {
+      "target": "https://account.api.here.com",
+      "secure": true,
+      "logLevel": "debug",
+      "changeOrigin": true,
+      "pathRewrite": {"^/hereapi-acc-dev" : "https://account.api.here.com"}
+    },
+    "/hereapi-get-dev/*": {
+      "target": "https://discover.search.hereapi.com",
+      "secure": true,
+      "logLevel": "info",
+      "changeOrigin": true,
+      "pathRewrite": {"^/hereapi-get-dev" : "https://discover.search.hereapi.com"}
+    }
+}

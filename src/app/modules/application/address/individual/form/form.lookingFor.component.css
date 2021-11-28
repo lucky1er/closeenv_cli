@@ -1,0 +1,40 @@
+.check-space-left {
+    padding-left: 3rem;
+}
+.btn-action-disabled {
+    color: lightslategray;
+    cursor: not-allowed;
+}
+.btn-action-enabled {
+    /*color: #007bff;*/
+    cursor: pointer;
+}
+.no-look-like-btn {
+    border: none;
+    padding: 0;
+}
+.contact-icon-color {
+    color: darkgreen;
+}
+.item-minimized-padding {
+    padding-top: 0.25rem;
+    padding-right: 0.5rem;
+    padding-bottom: 0.25rem;
+    padding-left: 0.5rem;
+}
+.no-padding-horizontally {
+    padding-right: 0;
+    padding-left: 0;
+}
+.font-minimized {
+    font-size: 0.7rem;
+    font-weight: 400;
+}
+.font-not-smallest {
+    font-size: 0.75rem;
+    font-weight: 400;
+}
+.answer-newly {
+    font-weight: bolder;
+    /*font-size: 0.8rem; line-height: 0.8;*/
+}

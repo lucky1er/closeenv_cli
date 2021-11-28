@@ -1,0 +1,49 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="card-deck">
+    <div class="card col-md-4">
+        <div class="card-body">
+            <h5 class="card-title">{{ 'Map.test.geolocation.option-1' | translate }}</h5>
+            <p class="card-text">
+                {{ 'Map.test.auto.geolocation' | translate }}&nbsp;<i class="fas fa-arrow-right"></i>&nbsp;
+                <button type="button" class="btn btn-sm btn-info" (click)="checkCurrentLocation()"
+                    [disabled]="geolocationError" [ngClass]="{'disabled': geolocationError}">{{ 'Map.test.auto.geolocation.btn.check' | translate }}
+                </button>
+            </p>
+            <p><small class="text-muted custom-danger">{{ 'Map.test.auto.geolocation.requires' | translate }}</small></p>
+        </div>
+    </div>
+    <div class="card">
+        <div class="card-header text-center">
+            {{ 'Map.relocate.option.enter.address' | translate }}
+        </div>
+        <div class="card-body">
+            <form>
+              <div class="form-row">
+                <div class="form-group col-md-12">
+                    <geoapify-geocoder-autocomplete
+                        [lang]="addonTranslator.getTranslationDefaultLang()"
+                        [type]="searchLocation.type"
+                        [placeholder]="'Map.relocate.input.address.placeholder' | translate"
+                        [skipIcons]="searchLocation.skipIcons"
+                        [skipDetails]="searchLocation.skipDetails"
+                        [biasByCountryCode]="searchLocation.biasByCountryCode"
+                        (placeSelect)="selectAddressCoords($event)">
+                    </geoapify-geocoder-autocomplete>
+                </div>
+              </div>
+              <div class="form-row justify-content-center">
+                <button type="submit" class="btn btn-sm btn-info mr-4" 
+                    [disabled]="selectedCoordinates === null" [ngClass]="{'disabled': selectedCoordinates === null}"
+                    (click)="validateSelectedCoords()"> {{ 'Map.relocate.btn.save.address' | translate }}
+                </button>
+              </div>
+            </form>
+        </div>
+    </div>
+</div>

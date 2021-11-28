@@ -1,0 +1,39 @@
+
+        <a [href]="userDataDownloadURL" [download]="userDataFilename" target="_blank" #userDownloadLink class="hidden-element"></a>
+        <button type="button" class="btn btn-sm btn-info light-color-text bottom-margin" (click)="getUserData()">
+            <span *ngIf="userDataLoading" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.access.right.data.btn' | translate }}
+        </button>
+
+        <div class="list-group" *ngIf="user">
+            <div class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding text-left">
+                <div class="col-12 form-check form-check-inline custom-checkbox mini-padding-left">
+                    <input type="checkbox" class="form-check-input custom-control-input" id="emailFromMerchant"
+                        [(ngModel)]="user.emailFromMerchant" [ngModelOptions]="{standalone: true}" (change)="updateFlagEmailFromMerchant()" />
+                    <label class="custom-control-label col-10 col-form-label-sm height-minimized-line" for="emailFromMerchant">
+                        {{ 'Member.preferences.email.merchant.label' | translate }}
+                    </label>
+                </div>
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding text-left">
+                <div class="col-12 form-check form-check-inline custom-checkbox mini-padding-left">
+                    <input type="checkbox" class="form-check-input custom-control-input" id="emailFromAsso"
+                        [(ngModel)]="user.emailFromAsso" [ngModelOptions]="{standalone: true}" (change)="updateFlagEmailFromAsso()" />
+                    <label class="custom-control-label col-10 col-form-label-sm height-minimized-line" for="emailFromAsso">
+                        {{ 'Member.preferences.email.asso.label' | translate }}
+                    </label>
+                </div>
+            </div>
+            <div class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding text-left">
+                <div class="col-12 form-check form-check-inline custom-checkbox mini-padding-left">
+                    <input type="checkbox" class="form-check-input custom-control-input" id="emailSiteNews"
+                        [(ngModel)]="user.emailSiteNews" [ngModelOptions]="{standalone: true}" (change)="updateFlagEmailSiteNews()" />
+                    <label class="custom-control-label col-10 col-form-label-sm height-minimized-line" for="emailSiteNews">
+                        {{ 'Member.preferences.email.site.label' | translate }}
+                    </label>
+                </div>
+            </div>
+        </div>
+
+        <button type="button" class="btn btn-secondary top-margin" (click)="backToParent()">
+            {{ 'Member.preferences.btn.back' | translate }}
+        </button>

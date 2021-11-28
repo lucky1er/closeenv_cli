@@ -1,0 +1,60 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div class="text-center" [hidden]="!dataLoading">
+    <div [hidden]="" class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+</div>
+<form class="form-address" *ngIf="myShop" (ngSubmit)="saveShop()">
+    <div class="form-row">
+        <div class="form-group col-12">
+            <label for="title" class="sr-only"><!-- nothing --></label>
+            <ng-select name="title" [items]="optionPlaces" bindLabel="title" bindValue="title" [multiple]="false"
+                [addTag]="true" [addTagText]="getAddTitleItemText()" [selectOnTab]="true" [closeOnSelect]="true"
+                notFoundText="{{ 'Member.vicinity.form.places.notFoundText' | translate}}" [loading]="optionPlacesLoading"
+                [(ngModel)]="myShop.title" (change)="selectPlace($event)" [clearable]="true" (clear)="shopReset()"
+                placeholder="{{ 'Member.vicinity.form.title.placeholder' | translate }}" >
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12" >
+            <label for="address" class="sr-only"><!-- nothing --></label>
+            <input #searchAddress type="text" name="address" id="address" class="form-control form-control-sm" placeholder="{{ 'Member.vicinity.form.address.placeholder' | translate }}"
+                [(ngModel)]="myShop.address" (ngModelChange)="unchanged = false" required readonly />
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="form-group col-12">
+            <ng-select  name="categories" [items]="optionCategories" [compareWith]="isCategorySelected" bindLabel="label" [multiple]="true"
+                        [closeOnSelect]="true" [clearable]=false [(ngModel)]="myShop.categories" (ngModelChange)="unchanged = false"
+                        [searchable]="true" notFoundText="{{ 'Member.vicinity.form.categ.notFoundText' | translate }}"
+                        placeholder="{{ 'Member.vicinity.form.categ.placeholder' | translate }}" >
+            </ng-select>
+        </div>
+    </div>
+    <div class="form-row">
+        <div class="col-auto col-12 mb-3">
+            <ng-select  name="contacts" [addTag]="true" [addTagText]="getAddContactItemText()" notFoundText="{{ 'Member.vicinity.form.contacts.notFoundText' | translate}}"
+                        [closeOnSelect]="true" [clearable]="false" [selectOnTab]="true" [(ngModel)]="myShop.contacts" (ngModelChange)="unchanged = false"
+                        [multiple]="true" placeholder="{{ 'Member.vicinity.form.contacts.placeholder' | translate }}" >
+            </ng-select>
+        </div>
+    </div>
+
+    <button type="submit" [disabled]="!isSaveShopAllowed() || requesting" class="btn btn-sm btn-primary "
+        [ngClass]="{'btn-action-disabled': !isSaveShopAllowed(), 'btn-action-enabled': isSaveShopAllowed()}">
+        <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.address.form.btn.submit' | translate }}
+    </button>&nbsp;&nbsp;
+    <button type="button" [disabled]="requesting" class="btn btn-sm btn-secondary" (click)="backToParent()">
+        {{ 'Member.address.form.btn.close' | translate }}
+    </button>&nbsp;&nbsp;
+    <button type="button" [disabled]="!isRemoveShopAllowed() || requesting" class="btn btn-sm btn-danger" (click)="removeShop()"
+        [ngClass]="{'btn-action-disabled': !isRemoveShopAllowed(), 'btn-action-enabled': isRemoveShopAllowed()}">
+        <i class="fas fa-times"></i>&nbsp;{{ 'Member.address.form.btn.remove' | translate }}
+    </button>
+</form>

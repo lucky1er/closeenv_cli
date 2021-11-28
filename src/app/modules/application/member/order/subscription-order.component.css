@@ -1,0 +1,35 @@
+.width-minimized-padding {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+}
+.zeroed-padding-left {
+    padding-left: 0;
+}
+.mini-padding-left {
+    padding-left: 0.25rem;
+}
+.margin-following {
+    margin-bottom: 1rem;
+}
+.input-optimized-width {
+    padding-left: 0.25rem;
+    padding-right: 0.25rem;
+    font-size: .875rem;
+}
+.text-right-margin {
+    margin-right: 1.25rem;
+}
+.height-minimized-line {
+    line-height: 1.0rem;
+}
+.keep-original-color {
+    color: black!important;
+}
+.body-bg-custom {
+    /*background-color: seashell;*/
+    background-color: whitesmoke;
+    border-color: lightsteelblue;
+}
+.select-bg-custom {
+    background-color: whitesmoke;
+}

@@ -1,0 +1,59 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+
+<div class="card" *ngIf="lookingFor">
+    <h6 class="card-header">
+        {{ 'Individual.vicinity.form.answer.header.lookingFor.from' | translate }}&nbsp;<B>{{ lookingFor.userName }}</B>&nbsp;
+        ({{ getLookingForCreationDateText() }},&nbsp;{{ 'Individual.vicinity.form.answer.header.lookingFor.city' | translate }}&nbsp;{{ lookingFor.userCity }})
+    </h6>
+    <div class="card-body">
+        <p class="font-italic">{{ lookingFor.text }}</p>
+        <div [innerHtml]="getLookingForContactsTextHtml()"></div>
+    </div>
+</div>
+<div class="card" *ngIf="lookingFor">
+    <h6 class="card-header">{{ 'Individual.vicinity.form.answer.header.your.answer' | translate }}<span>{{ getAnswerDateAdditionalText() }}</span></h6>
+    <div class="card-body">
+        <form class="form-message" [formGroup]="formAnswer" (ngSubmit)="saveAnswer()">
+            <div class="form-row">
+                <div class="form-group col-12 col-md-12 col-sm-12">
+                    <label for="text" class="sr-only">{{ 'Individual.vicinity.form.answer.text.label' | translate }}</label>
+                    <textarea type="text" formControlName="text" id="text" class="md-textarea md-textarea-auto form-control"
+                        placeholder="{{ 'Individual.vicinity.form.answer.text.label' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.text.errors }" [readonly]="answerAlreadyExists()" >
+                    </textarea>
+                    <div *ngIf="submitted && f.text.errors" class="invalid-feedback">
+                        <div *ngIf="f.text.errors.required">{{ 'Individual.form.lookingFor.text.required' | translate }}</div>
+                        <div *ngIf="f.text.errors.minlength">{{ 'Individual.form.lookingFor.text.minLength' | translate:{'requiredLength':f.text.errors.minlength.requiredLength} }}</div>
+                        <div *ngIf="f.text.errors.maxlength">{{ 'Individual.form.lookingFor.text.maxLength' | translate:{'limitedLength':f.text.errors.maxlength.requiredLength} }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group col-12 col-md-12 col-sm-12">
+                    <ng-select formControlName="contacts" [addTag]="true" [addTagText]="getAddContactItemText()" [clearable]="false"
+                        [closeOnSelect]="true" [selectOnTab]="true" [multiple]="true" [readonly]="answerAlreadyExists()"
+                        placeholder="{{ 'Individual.form.lookingFor.contacts.placeholder' | translate }}"
+                        notFoundText="{{ 'Member.vicinity.form.contacts.notFoundText' | translate}}" >
+                    </ng-select>
+                </div>
+            </div>
+            <input formControlName="id" type="hidden" />
+            <input formControlName="user" type="hidden" />
+            <input formControlName="lookingFor" type="hidden" />
+
+            <button type="submit" [disabled]="!isSaveAnswerAllowed()" class="btn btn-primary"
+                [ngClass]="{'btn-action-disabled': !isSaveAnswerAllowed(), 'btn-action-enabled': isSaveAnswerAllowed()}">
+                <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Individual.vicinity.form.answer.btn.submit' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="!isRemoveAnswerAllowed()" class="btn btn-danger" (click)="removeAnswer()"
+                [ngClass]="{'btn-action-disabled': !isRemoveAnswerAllowed(), 'btn-action-enabled': isRemoveAnswerAllowed()}">
+                <i class="fas fa-times"></i>&nbsp;{{ 'Merchant.shop.message.form.btn.remove' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+<div id="map" leaflet [leafletOptions]="mapService.getMapOptions()" (leafletMapReady)="mapService.onMapReady($event)">
+    <div class="btn-group btn-group-sm map-overlay float-right">
+        <button type="button" id="back-list" class="btn btn-secondary" (click)="backToParent()">
+            {{ 'Member.vicinity.map.btn.back' | translate }}
+        </button>
+    </div>
+</div>

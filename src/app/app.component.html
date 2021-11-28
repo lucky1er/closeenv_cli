@@ -1,0 +1,113 @@
+<div class="app d-flex flex-column">
+
+  <header>
+    <nav class="navbar navbar-expand-md fixed-top navbar-dark navbar-color">
+      <a class="navbar-brand" [routerLink]="['/']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+        <span class="mr-1 color-white">{{ appBrand }}</span>
+        <img src="./assets/params/images/logo/CloseEnv-icon-72x72.png" width="36" height="36" alt="Logo Close-Env.">
+      </a>
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault"
+        aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item active" *ngIf="!this.authService.isLoggedIn">
+            <a class="nav-link color-other-light" [routerLink]="['/']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+              <i class="fas fa-home mr-1"></i>{{ 'Nav.item.home' | translate }}
+            </a>
+          </li>
+          <li class="nav-item active" *ngIf="!this.authService.isLoggedIn">
+            <a class="nav-link color-other-light" [routerLink]="['/about']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+              <i class="far fa-question-circle mr-1"></i>{{ 'Nav.item.about' | translate }}
+            </a>
+          </li>
+          <li class="nav-item active" *ngIf="!this.authService.isLoggedIn">
+            <a class="nav-link color-other-light" [routerLink]="['/contact']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+              <i class="fas fa-envelope mr-1"></i>{{ 'Nav.item.contact' | translate }}
+            </a>
+          </li>
+          <li class="nav-item active" *ngIf="!this.authService.isLoggedIn">
+            <a class="nav-link color-other-light" [routerLink]="['/signin']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+              <i class="fas fa-user mr-1"></i>{{ 'Nav.item.signin' | translate }}
+            </a>
+          </li>
+          <li class="nav-item active" *ngIf="!this.authService.isLoggedIn">
+            <a class="nav-link color-other-light" [routerLink]="['/relocate']" [queryParams]="{lang: addonTranslator.currentLgCode}">
+              <i class="fas fa-search-location mr-1"></i>{{ 'Map.relocate.link' | translate }}
+            </a>
+          </li>
+          <li class="nav-item active" *ngIf="this.authService.isUserAdmin()">
+            <i (click)="toggleMaintenance()" class="fas fa-2x mr-1 maint-status-btn" [ngClass]="{'fa-user-slash': underMaintenance, 'fa-user': !underMaintenance}"></i>&nbsp;
+          </li>
+          <li class="nav-item active" *ngIf="this.authService.isLoggedIn && !this.apiHttpService.isOffline()">
+            <i (click)="logout()" class="fas fa-power-off fa-2x mr-1 deconx-btn" title="{{ 'Nav.item.logout' | translate }}"></i>
+          </li>
+          <li class="nav-item active" *ngIf="this.authService.isLoggedIn && this.apiHttpService.isOffline()">
+            <i class="fas fa-ban fa-2x mr-1 off-btn" title="{{ 'Nav.item.offline' | translate }}"></i>
+          </li>
+        </ul>
+      </div>
+    </nav>
+  </header>
+
+  <main class="main-height">
+    <div *ngIf="!this.authService.isUserRecovered() isLoggedIn" class="container-fluid">
+      <router-outlet></router-outlet>
+    </div>
+    <div *ngIf="this.authService.isUserRecovered()" class="container-fluid no-padding-left">
+      <div class="card text-center">
+        <div class="card-header">
+          <ul class="nav nav-tabs card-header-tabs">
+            <li class="nav-item">
+              <a class="nav-link minimized-padding" routerLink="/member/home" routerLinkActive="active">{{ 'Member.nav.item.subscription' | translate }}</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link minimized-padding" [ngClass]="{'disabled': !this.authService.activeUserSubscription}" routerLink="/member/address" routerLinkActive="active">
+                {{ 'Member.nav.item.address' | translate }}
+              </a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link minimized-padding" [ngClass]="{'disabled': !this.authService.activeUserSubscription}" routerLink="/member/vicinity/{{this.authService.userAddressActive}}" routerLinkActive="active">
+                {{ 'Member.nav.item.vicinity' | translate }}
+              </a>
+            </li>
+
+            <li class="nav-item" *ngIf="this.authService.isUserAdmin()">
+              <a class="nav-link minimized-padding" routerLink="/admin/report/users" routerLinkActive="active">
+                {{ 'Nav.admin.item.report.users' | translate }}
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="this.authService.isUserAdmin()">
+              <a class="nav-link minimized-padding" routerLink="/admin/report/invoicing" routerLinkActive="active">
+                {{ 'Nav.admin.item.report.invoicing' | translate }}
+              </a>
+            </li>
+            <li class="nav-item" *ngIf="this.authService.isUserAdmin()">
+              <a class="nav-link minimized-padding" routerLink="/admin/stats" routerLinkActive="active">
+                {{ 'Nav.admin.item.stats' | translate }}
+              </a>
+            </li>
+          </ul>
+        </div>
+        <div class="card-body width-middled-padding" [ngClass]="{'minimized-padding-top': authService.isVicinityRouteActive}">
+          <router-outlet></router-outlet>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="footer">
+    <div class="container">
+      <div class="row">
+        <div class="col-12">
+          <p class="text-center text-white minimized-margin">&copy; 2020 - <B>{{ appBrand }}</B> - ({{ appVersion }})
+            -<select class="custom-select-lang" [(ngModel)]="addonTranslator.currentLgCode" [ngModelOptions]="{standalone: true}"
+              title="{{ 'App.lang.select' | translate }}" (change)="changeLanguage($event)">
+              <option *ngFor="let lang of addonTranslator.langCodes" value="{{ lang }}">{{ lang }}</option>
+            </select>- <em>{{ 'App.slogan' | translate }}</em>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>

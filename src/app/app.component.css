@@ -1,0 +1,90 @@
+/* https://getbootstrap.com/docs/4.0/utilities/flex/ */
+
+.global-container {
+	min-height: 100%; /* 100vh; */
+	display: flex;
+	flex-direction: column;  
+}
+
+.language-select button.active {
+	font-weight: bolder;
+}
+.language-select button.unselected {
+	font-weight: lighter;
+}
+.custom-select-lang {
+    display: inline-block;
+    color: #495057;
+	background-color: lightsteelblue !important;
+    background: #fff url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' width='4' height='5' viewBox='0 0 4 5'%3e%3cpath fill='%23343a40' d='M2 0L0 2h4zm0 5L0 3h4z'/%3e%3c/svg%3e") right .5rem center/8px 10px no-repeat;
+    border: 1px solid #ced4da;
+    border-radius: .25rem;
+	height: calc(1.5em + .5rem + 2px);
+	padding-top: .25rem;
+	padding-bottom: .25rem;
+	padding-left: .2rem;
+	width: 50px;
+	font-weight: 600;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+}
+
+.card {
+    margin-bottom: 20px;
+}
+.no-padding-left {
+	padding-left: 0;
+}
+.deconx-btn {
+	color: #C29C77;
+	cursor: pointer;
+}
+.off-btn {
+	color: darkred;
+	cursor: not-allowed;
+}
+.maint-status-btn {
+	cursor: pointer;
+}
+.minimized-padding {
+	padding-right: 0.5rem;
+	padding-left: 0.5rem;
+}
+.width-middled-padding {
+    padding-right: 0.75rem;
+    padding-left: 0.75rem;
+}
+
+.main-height {
+	min-height: 75vh;
+	/* flex: 1; */
+	/*padding: 1rem;*/
+}
+
+.color-white {
+	color: white;
+}
+.color-other-light {
+	color: antiquewhite;
+}
+.navbar-color {
+	background-color: cadetblue; /* #3F729B; */
+}
+
+.app main, .app footer {
+  	padding-left: 1rem;
+}
+
+.footer {
+  	background: #3F729B;
+  	padding: 2em;
+  	padding-top: 1.5em;
+	padding-bottom: 1em;
+}
+.minimized-margin {
+	margin-bottom: 0;
+}
+.minimized-padding-top {
+	padding-top: 0.75rem;
+}

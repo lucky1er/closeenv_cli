@@ -1,0 +1,116 @@
+{
+  "$schema": "./node_modules/@angular/service-worker/config/schema.json",
+  "index": "/index.html",
+  "dataGroups": [{
+    "name": "longer-validity",
+    "urls": [
+      "https://a.tile.openstreetmap.org/**",
+      "https://b.tile.openstreetmap.org/**",
+      "https://c.tile.openstreetmap.org/**"
+    ],
+    "version": 3,
+    "cacheConfig": {
+      "strategy": "performance",
+      "maxSize": 250,
+      "maxAge": "15d"
+    }
+  },
+  {
+    "name": "node-performance",
+    "urls": [
+      "https://node.close-env.com/away/api/**"
+    ],
+    "version": 3,
+    "cacheConfig": {
+      "strategy": "performance",
+      "maxSize": 100,
+      "maxAge": "15d"
+    }
+  },
+  {
+    "name": "stale-while-revalidate",
+    "urls": [
+      "https://api.close-env.com/app/ver",
+      "https://api.close-env.com/app/home_messages",
+      "https://api.close-env.com/api/nearby/*/users_get/**"
+    ],
+    "version": 3,
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 7,
+      "maxAge": "15d",
+      "timeout": "0u"
+    }
+  },
+  {
+    "name": "api-cache-first",
+    "urls": [
+      "https://api.close-env.com/api/categories"
+    ],
+    "version": 3,
+    "cacheConfig": {
+      "strategy": "performance",
+      "maxSize": 10,
+      "maxAge": "15d"
+    }
+  },
+  {
+    "name": "api-net-first",
+    "urls": [
+      "https://api.close-env.com/app/status_check",
+      "https://node.close-env.com/away/token",
+      "https://api.close-env.com/api/me/**",
+      "https://api.close-env.com/api/asso/**",
+      "https://api.close-env.com/api/shop/**",
+      "https://api.close-env.com/api/looking/**",
+      "https://api.close-env.com/api/general_app",
+      "https://api.close-env.com/api/general_messages_pending",
+      "https://api.close-env.com/api/subscription_uses/**",
+      "https://api.close-env.com/api/addresses",
+      "https://api.close-env.com/api/addresses/**",
+      "https://api.close-env.com/api/address/**",
+      "https://api.close-env.com/api/places",
+      "https://api.close-env.com/api/places/**",
+      "https://api.close-env.com/api/nearby/*/users_count/**",
+      "https://api.close-env.com/api/nearby/*/places_get/**",
+      "https://api.close-env.com/api/invoice/list/**",
+      "https://api.close-env.com/api/report/users/countries/list"
+    ],
+    "version": 3,
+    "cacheConfig": {
+      "strategy": "freshness",
+      "maxSize": 300,
+      "maxAge": "15d",
+      "timeout": "7s"
+    },
+    "cacheQueryOptions": {
+      "ignoreSearch": true
+    }
+  }],
+  "assetGroups": [
+    {
+      "name": "app",
+      "installMode": "prefetch",
+      "resources": {
+        "files": [
+          "/favicon.ico",
+          "/index.html",
+          "/manifest.webmanifest",
+          "/*.css",
+          "/*.js"
+        ]
+      }
+    }, {
+      "name": "assets",
+      "installMode": "lazy",
+      "updateMode": "prefetch",
+      "resources": {
+        "files": [
+          "/assets/**",
+          "!/assets/infos/versioned-docs/**",
+          "/*.(eot|svg|cur|jpg|png|webp|gif|otf|ttf|woff|woff2|ani)"
+        ]
+      }
+    }
+  ]
+}

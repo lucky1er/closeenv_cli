@@ -1,0 +1,96 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<form *ngIf="!showDetail" class="form-search">
+    <div class="form-row">
+        <div class="col-3 col-md-3 col-sm-3">
+            <label for="select-year" class="sr-only"></label>
+            <input type="text" id="select-year" class="form-control-sm" [(ngModel)]="targetYear" [ngModelOptions]="{standalone: true}"
+                placeholder="{{ 'Member.invoice.search.year.placeholder' | translate }}" required />
+        </div>
+        <div class="col-6 col-md-6 col-sm-6 text-left">
+            <button type="submit" [disabled]="dataLoading || !yearTargeted()" class="btn btn-sm btn-primary " (click)="getReportData()"
+                [ngClass]="{'btn-action-disabled': dataLoading || !yearTargeted()}">
+                <span *ngIf="dataLoading" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Member.invoice.search.btn.submit' | translate }}
+            </button>
+        </div>
+    </div>
+</form>
+<br/>
+<!-- https://getbootstrap.com/docs/4.0/content/tables/#striped-rows -->
+<div *ngIf="!showDetail && !invoicingByPeriod">
+    <br/><br/><br/>
+    <div [hidden]="!dataLoading" class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+    <br/><br/><br/><br/><br/>
+</div>
+<table *ngIf="!showDetail && invoicingByPeriod" class="table table-striped">
+    <thead>
+        <tr>
+            <th scope="col">Période</th>
+            <th scope="col">Nombre de factures</th>
+            <th scope="col">Total C.A.</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr *ngFor="let item of invoicingByPeriod;" [ngClass]="{'table-info': isYearCumulationItem(item)}">
+            <th scope="row">
+                {{ item.per }}&nbsp;
+                <i [hidden]="isYearCumulationItem(item)" class="fas fa-file-import icon-action-enabled" (click)="getInvoicingDetail(item.per)"></i>&nbsp;
+                <i [hidden]="!isPeriodArchiveZero(item)" class="fas fa-archive icon-action-enabled" (click)="reqArchiveInvoicingPeriod(item)"></i>
+                <i [hidden]="isPeriodArchiveZero(item) || isPeriodArchiveNull(item)" class="fas fa-archive icon-action-disabled"
+                [ngClass]="{'icon-color-archiving': isPeriodArchiveRequested(item), 'icon-color-archived': isPeriodArchiveExisting(item)}"></i>
+            </th>
+            <td>{{ item.nb }}</td>
+            <td>{{ item.total | number:'1.2-2' }}</td>
+        </tr>
+    </tbody>
+    <!--tfoot>
+        <tr >
+            <td colspan="2">Total général pour l'année {{ targetYear }}</td>
+            <td>{{ grandTotal | number }}</td>
+        </tr>
+    </tfoot-->
+</table>
+<div *ngIf="showDetail">
+    <div [hidden]="!dataLoading" class="spinner-border text-info" role="status">
+        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+    </div>
+    <table [hidden]="dataLoading" class="table table-striped">
+        <thead>
+            <tr>
+                <th scope="col">
+                    <i [hidden]="downloading" class="fas fa-arrow-alt-circle-left icon-action-enabled" (click)="backToAggregates()"></i>
+                    <div [hidden]="!downloading" class="spinner-border text-info" role="status">
+                        <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+                    </div>
+                    Réf. facture
+                </th>
+                <th scope="col">Date facture</th>
+                <th scope="col">Utilisateur</th>
+                <th scope="col">Description</th>
+                <th scope="col">Montant €</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let invoice of invoicingPeriodDetails;" >
+                <th>
+                    <div [ngClass]="{'alert alert-info': invoice.first}" class="no-extra-space">
+                        {{ invoice.invoiceNumber }}
+                        <i class="fas fa-file-download" (click)="doPdfDownload(invoice)"
+                            [ngClass]="{'icon-action-enabled': !downloading, 'icon-action-disabled': downloading}"></i>
+                    </div>
+                    <a #invoiceDownloadLink [hidden]="true" [href]="downloadFileUrl" [download]="downloadFileName" target="_blank"></a>
+                </th>
+                <td>{{ invoice.creationDate | date:'shortDate':undefined:locale }}</td>
+                <td>{{ invoice.user }}</td>
+                <td>{{ invoice.description }}</td>
+                <td>{{ invoice.total | number:'1.2-2' }}</td>
+            </tr>
+        </tbody>
+    </table>
+</div>

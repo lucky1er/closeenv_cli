@@ -1,0 +1,87 @@
+<div>
+    <div class="text-center" [hidden]="!dataLoading && !showWarningMessage">
+        <div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ warningMessage | translate }}
+            <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="!dataLoading" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+    </div>
+
+    <div class="" *ngIf="showList && address">
+        <div class="row justify-content-end">
+            <div class="col-8"><h6><small>{{ address.addressLabel }},&nbsp;{{ address.city }}</small> - {{ 'Individual.list.lookingFors.title' |translate }}</h6></div>
+            <div class="col-4 fa-lg">
+                <i class="far fa-edit btn-first-position" [ngClass]="{'btn-action-enabled': selectedLookingForId !== '', 'btn-action-disabled': selectedLookingForId === ''}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square" (click)="updateLookingFor()"></i>&nbsp;
+                <i class="fas fa-user-plus btn-second-position" [ngClass]="{'btn-action-enabled': addLookingForAllowed(), 'btn-action-disabled': !addLookingForAllowed()}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square"
+                      (click)="addLookingFor()"></i>&nbsp;
+                <i class="fas fa-arrow-alt-circle-left btn-third-position btn-action-enabled" data-fa-transform="shrink-6" data-fa-mask="fas fa-square"
+                    (click)="backToParent()">
+                </i>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" *ngIf="showList">
+        <div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ successMessage | translate }}
+            <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <a class="btn btn-block btn-sm thinner-line-height" data-toggle="collapse" href="#collapseFilter" role="button" aria-expanded="false" aria-controls="collapseFilter"
+            [ngClass]="{'btn-light': !filterNotAllSelected(), 'btn-filter-chk': filterNotAllSelected()}">{{ 'Member.vicinity.list.filter.label' | translate }}
+        </a>
+        <div class="collapse" id="collapseFilter">
+            <div class="row">
+                <div class="form-check form-check-inline custom-control custom-checkbox" >
+                    <input class="form-check-input custom-control-input" type="checkbox" id="filter-onlyActive" [checked]="filter.onlyActive"
+                        (change)="queueChangeFilter($event, 1)" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line" for="filter-onlyActive">{{ 'Individual.list.lookingFors.filter.onlyActive.label' | translate }}</label>
+                </div>
+                <div class="form-check-inline">
+                    <div class="col-6 col-md-4 col-lg-3 no-padding-right">
+                        <input type="range" class="form-control-range custom-range" min="7" max="15" id="nbItemsPerPage" [ngModel]="nbItemsPerPage" (ngModelChange)="queueChangeIPP($event)"/>
+                    </div>
+                    <div class="col-6 col-md-6 col-lg-6 minimized-padding-left">
+                        <label class="col-form-label-sm little-bit-more-down" for="nbItemsPerPage"><B>{{nbItemsPerPage}}</B>&nbsp;{{ 'Member.vicinity.list.range.items.per.page' | translate }}</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div *ngIf="activePageLookingFors" class="list-group" role="list" id="list-focus"
+            (keydown.arrowup)="onKeydown($event)" (keydown.arrowdown)="onKeydown($event)" (keydown.enter)="onKeydown($event)">
+            <app-lookingfor-item #itemLookingFor *ngFor="let item of activePageLookingFors; index as ind;" 
+                [itemLookingFor]="item" [locale]="locale" (click)="selectListItem(ind)">
+            </app-lookingfor-item>
+        </div>
+        <nav aria-label="page-navigation" class="margin-previous">
+            <div class="d-flex justify-content-around flex-wrap">
+                <ul class="pagination d-sm-inline-flex height-minimized-margin">
+                    <li class="page-item item-selectable" [ngClass]="{'disabled': pageActive < 2}" (click)="decrementPageActive()">
+                        <span class="page-link"><i class="fas fa-angle-double-left"></i>{{ 'Member.vicinity.list.page.previous' | translate }}</span>
+                    </li>
+                    <li class="page-item item-selectable" *ngFor="let pageNumber of getPages()" [ngClass]="{'active': pageActive == pageNumber}" (click)="gotoPageActive(pageNumber)">
+                        <span class="page-link">{{ pageNumber | number }}</span>
+                    </li>
+                    <li class="page-item item-selectable" [ngClass]="{'disabled': pageActive >= totalPagesNumber()}" (click)="incrementPageActive()">
+                        <span class="page-link">{{ 'Member.vicinity.list.page.next' | translate }}<i class="fas fa-angle-double-right"></i></span>
+                    </li>
+                </ul>
+            </div>
+        </nav>
+    </div>
+
+    <div *ngIf="showForm">
+        <app-form-lookingfor [lookingFor]="lookingForToForm" [address]="address" [locale]="locale"
+            (lookingForValidated)="lookingForChanges($event)" (closeWithoutValidation)="comeBackToList(false)" (closeAfterRemoval)="comeBackToList(true)">
+        </app-form-lookingfor>
+    </div>
+
+</div>

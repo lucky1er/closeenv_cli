@@ -1,0 +1,112 @@
+<div>
+    <div class="text-center" [hidden]="!loading && !showWarningMessage">
+        <div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+            {{ warningMessage | translate }}
+            <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="!loading" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+    </div>
+
+    <div class="" *ngIf="showAddressList">
+        <div class="row justify-content-end">
+            <div class="col-8"><h5>{{ 'Member.address.list.title' | translate }}</h5></div>
+            <div class="col-4 fa-lg">
+                <i class="far fa-edit btn-first-position" [ngClass]="{'btn-action-enabled': updateAddressAllowed(), 'btn-action-disabled': !updateAddressAllowed()}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square" (click)="updateAddress()"></i>&nbsp;
+                <i class="fas fa-user-plus btn-second-position" [ngClass]="{'btn-action-enabled': addAddressAllowed(), 'btn-action-disabled': !addAddressAllowed()}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square" (click)="addAddress()"></i>&nbsp;
+                <a routerLink="/member/vicinity/{{selectedAddressId}}"><i class="fas fa-list btn-third-position"
+                    [ngClass]="{'btn-action-enabled': selectedAddressId !== 0, 'btn-action-disabled': selectedAddressId === 0}"
+                    data-fa-transform="shrink-6" data-fa-mask="fas fa-square">
+                </i></a>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" *ngIf="showAddressList">
+        <div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ successMessage | translate }}
+            <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+
+        <ul class="list-group"> <!-- routerLink="/member/vicinity/{{address.id}}" -->
+            <li #itemAddress *ngFor="let address of userAddresses; index as i; first as isFirst"
+                class="list-group-item list-group-item-action flex-column align-items-start item-selectable disable-text-selection"
+                [ngClass]="{'list-group-item-primary': isListItemSelected(address)}" data-id="i-{{address.id}}">
+                <div class="w-100 justify-content-between">
+                    <h6 class="mb-1">{{ address.addressLabel }}</h6>
+                    <p class="mb-1">
+                        <span>{{ address.postCode }}&nbsp;{{ address.city }}</span>
+                    </p>
+                    <p class="mb-0" *ngIf="isMerchantSubscriber()">
+                        <span *ngIf="address.nbUsersAround" class="badge badge-color-custom badge-pill table-badge-display no-pointer">
+                            {{ address.nbUsersAround }}
+                        </span>&nbsp;&nbsp;
+                        <span *ngIf="true" class="badge badge-pill table-badge-display" [ngClass]="{'badge-info': address.shop, 'badge-secondary': !address.shop}"
+                            (click)="switchMerchantShopForm(address.id)">
+                            {{ 'Member.address.merchant.shop.form.btn' | translate }}
+                        </span>&nbsp;&nbsp;
+                        <span *ngIf="address.shop && address.shopValidated" class="badge badge-pill table-badge-display" [ngClass]="{'badge-info': address.msgsCount, 'badge-secondary': !address.msgsCount}"
+                            (click)="switchMerchantMsgsList(address.id)">
+                            {{ 'Member.address.merchant.messages.form.btn' | translate }}
+                        </span>
+                    </p>
+                    <p class="mb-0" *ngIf="isAddressMatchesAssociation(address)">
+                        <span *ngIf="address.nbUsersAround" class="badge badge-color-custom badge-pill table-badge-display no-pointer">
+                            {{ address.nbUsersAround }}
+                        </span>&nbsp;&nbsp;
+                        <span class="badge badge-pill table-badge-display" [ngClass]="{'badge-info': address.msgsCount, 'badge-secondary': !address.msgsCount}"
+                            (click)="switchAssoMessages(address)">
+                            {{ 'Association.address.btn.messages' | translate }}
+                        </span>
+                    </p>
+                    <p class="mb-0" *ngIf="!isMerchantSubscriber() && !isAddressMatchesAssociation(address)">
+                        <!-- {{ getTextAddressUnderCountry(address) }}&nbsp;{{ address.country }} -->
+                        <span class="badge badge-pill table-badge-display" [ngClass]="{'badge-info': address.lfiCount, 'badge-secondary': !address.lfiCount}"
+                            (click)="switchLookingForsList(address)">
+                            {{ 'Individual.address.lookingFors.access.btn' | translate }}
+                        </span>
+                    </p>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+    <div class="card" *ngIf="showAddressForm">
+        <h4 class="card-header">{{ 'Member.address.form.header' | translate }}</h4>
+        <div class="card-body">
+            <app-form-address [address]="addressToForm" [isTheOnlyOne]="(userAddresses.length < 2)"
+                [currentLangCode]="addonTranslator.getTranslationDefaultLang()"
+                (addressValidated)="addressChanges($event)"
+                (closeWithoutValidation)="comeBackToList(false)"
+                (closeAfterRemoval)="comeBackToList(true)" >
+            </app-form-address>
+        </div>
+    </div>
+
+    <div class="card" *ngIf="showShopForm">
+        <h4 class="card-header">{{ 'Member.address.merchant.shop.form.header' | translate }}</h4>
+        <div class="card-body">
+            <app-form-shop [address]="addressToShop" [optionCategories]="addonTranslator.mapCodeLabelWithDefaultTranslation(baseCategories)"
+                (shopValidated)="shopChanges($event)"
+                (closeWithoutValidation)="comeBackToList(false)"
+                (closeAfterRemoval)="comeBackToList(true)" >
+            </app-form-shop>
+        </div>
+    </div>
+
+    <div *ngIf="showMessagesList">
+        <app-messages [address]="addressToShop" (closeChildComponent)="comeBackToList(false)">
+        </app-messages>
+    </div>
+
+    <div *ngIf="showLookingForsList">
+        <app-individual [address]="addressToShop" (closeChildComponent)="comeBackToList(false)"></app-individual>
+    </div>
+</div>

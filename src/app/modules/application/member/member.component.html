@@ -1,0 +1,103 @@
+<div >
+    <div class="text-center">
+        <div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+            <strong>{{ warningMessageStrong | translate }}</strong>&nbsp;{{ warningMessage | translate }}
+            <button [hidden]="warningMessageCloseable" (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="showWarningMessage || userConnected" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+    </div>
+
+    <div class="card border-light" *ngIf="userConnected" [hidden]="secondaryPageShown()">
+        <div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+            {{ successMessage | translate }}
+            <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+        </div>
+        <div [hidden]="!showInfoMessages" class="card col-md-12 alert custom-alert-info" role="alert">
+            <button type="button" class="close text-right shift-top-right" aria-label="Close" (click)="showInfoMessages = false">
+                <span aria-hidden="true">&times;</span>
+            </button>
+            <div *ngFor="let envelope of infoMessages; index as i; last as isLast">
+                <p>{{ addonTranslator.getOriginalTranslation(envelope.text) }}</p>
+                <hr *ngIf="!isLast">
+            </div>
+        </div>
+        <div class="card p-2">
+            <div class="card-body height-minimized-padding width-minimized-padding">
+                <h5 class="card-title">{{ userConnected.firstName }}&nbsp;{{ userConnected.lastName }}</h5>
+                <p class="card-text minimized-margin-following">
+                    {{ userConnected.email }}&nbsp;
+                    <button type="button" class="btn btn-sm btn-info" (click)="openPreferences()">
+                        {{ 'Member.action.btn.preferences' | translate }}
+                    </button>
+                </p>
+                <small class="text-muted custom-info">
+                    <button type="button" class="btn btn-outline-secondary no-look-like-btn no-pointer"
+                        placement="bottom" container="body" ngbTooltip="{{ tooltipTextUsersFoundInVicinity }}">
+                        {{ userConnected.address }}&nbsp;<i *ngIf="nbPotentialLocalCustomers" class="fas fa-users"></i>
+                    </button>
+                </small>
+                <!--span *ngIf="nbPotentialLocalCustomers" class="badge badge-secondary badge-pill table-badge-display">&nbsp;{{ nbPotentialLocalCustomers }}</span-->
+                <span>&nbsp;
+                    <button type="button" class="btn btn-sm btn-info" (click)="openInvoiceSearch()">
+                        {{ 'Member.invoice.search.access.btn' | translate }}
+                    </button>
+                </span>
+                <div *ngIf="linkToOwnershipClaim">&nbsp;
+                    <a [href]="linkToOwnershipClaim" >{{ 'Member.access.last.pending.ownership.claim' | translate }}</a>
+                </div>
+            </div>
+        </div>
+        <div class="list-group margin-following">
+            <a *ngIf="currentSubscription" routerLink="/member/address" class="list-group-item list-group-item-action flex-column align-items-start"
+                [ngClass]="{'active': currentSubscription.paymentValidated, 'disabled': !currentSubscription.paymentValidated}">
+                <div class="w-100 justify-content-between">
+                    <h5 class="mb-1">{{ getCurrentSubcriptionTitle() | translate }}</h5>
+                    <small>{{ addonTranslator.getOriginalTranslation(currentSubscription.offerLabel) }}</small>
+                </div>
+                <p *ngIf="!isCurrentTrialOffer()" class="mb-1">
+                    {{ currentSubscription.startingDate | date:'mediumDate':undefined:locale }} - {{ currentSubscription.endingDate | date:'mediumDate':undefined:locale }}
+                </p>
+                <p *ngIf="isCurrentTrialOffer()" class="mb-1">
+                    {{ currentSubscription.startingDate | date:'mediumDate':undefined:locale }}
+                </p>
+                <small *ngIf="!isCurrentTrialOffer()">
+                    <em>{{ ('Type.'+currentSubscription.type)|translate }}</em>&nbsp;-&nbsp;{{ currentSubscription.numberDaysLeft }}&nbsp;{{ 'Member.subscrip.current.days.left' | translate }}
+                </small>
+                <small *ngIf="isCurrentTrialOffer()">
+                    {{ currentSubscription.numberDaysLeft }}&nbsp;{{ 'Member.subscrip.current.days.left' | translate }}
+                </small>
+            </a>
+            <a href="#" *ngIf="latestSubscription" class="list-group-item list-group-item-action flex-column align-items-start disabled">
+                <div class="w-100 justify-content-between">
+                  <h5 class="mb-1">{{ 'Member.subscrip.latest.title' | translate }}</h5>
+                </div>
+                <p><small>{{ addonTranslator.getOriginalTranslation(latestSubscription.offerLabel) }}</small></p>
+                <p class="mb-1">{{ latestSubscription.startingDate | date:'mediumDate':undefined:locale }} - {{ latestSubscription.endingDate | date:'mediumDate':undefined:locale }}</p>
+                <small><em>{{ ('Type.'+latestSubscription.type)|translate }}</em>&nbsp;-&nbsp;{{ getTextLatestExpiredOrNot() }}</small>
+            </a>
+        </div>
+    </div>
+    <div class="card order-card-custom" [hidden]="!newSubscriptionAllowed || secondaryPageShown()">
+        <div class="card-header order-header-custom list-group-item-primary text-center text-primary">
+            {{ 'Member.subscrip.component.new.subscription' | translate }} <B>{{ nextSubscripDate | date:'mediumDate':undefined:locale }}</B>
+        </div>
+        <app-subscription-order [locale]="locale" [languageCode]="currentLangCode" [userIri]="getUserIri()"
+            [userInfos]="userConnected" [offers]="availableOffers" [newSubscription]="subscriptionToOrder"
+            (newSubscriptionValidated)="refreshSubscriptionsWithOrdered($event)">
+        </app-subscription-order>
+    </div>
+
+    <div [hidden]="!showUserPreferences">
+        <app-preferences [user]="userConnected" (closeChildComponent)="closePreferences()"></app-preferences>
+    </div>
+
+    <div *ngIf="userConnected" [hidden]="!showUserInvoices">
+        <app-invoice-search [user]="userConnected" [languageCode]="currentLangCode" [locale]="locale" (closeChildComponent)="closeInvoiceSearch()"></app-invoice-search>
+    </div>
+</div>

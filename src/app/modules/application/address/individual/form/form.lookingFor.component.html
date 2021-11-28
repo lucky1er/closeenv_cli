@@ -1,0 +1,134 @@
+<div [hidden]="!showWarningMessage" class="alert alert-warning alert-dismissible fade show" role="alert">
+    {{ warningMessage | translate }}
+    <button (click)="showWarningMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<div [hidden]="!showSuccessMessage" class="alert alert-success alert-dismissible fade show" role="alert">
+    {{ successMessage | translate }}
+    <button (click)="showSuccessMessage = false" type="button" class="close" aria-label="Close">
+      <span aria-hidden="true">&times;</span>
+    </button>
+</div>
+<ng-template #removeConfirmModal let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ 'Individual.form.lookingFor.modal.remove.confirm.title' | translate }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div>
+            {{ 'Individual.form.lookingFor.modal.remove.confirm.message' | translate }}
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('confirm')">
+            {{ 'Individual.form.lookingFor.modal.remove.confirm.btn.ok' | translate }}
+        </button>
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('cancel')">
+            {{ 'Individual.form.lookingFor.modal.remove.confirm.btn.cancel' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<ng-template #modalAnswersView let-modal>
+    <div class="modal-header">
+      <h4 class="modal-title" id="modal-basic-title">{{ 'Individual.form.lookingFor.answers.modal.title' | translate }}</h4>
+      <button type="button" class="close" aria-label="Close" (click)="modal.dismiss('cross-click')">
+        <span aria-hidden="true">&times;</span>
+      </button>
+    </div>
+    <div class="modal-body">
+        <div [hidden]="!answersLoading" class="spinner-border text-info" role="status">
+            <span class="sr-only">{{ 'Info.waiting.for.loading.text' | translate }}</span>
+        </div>
+        <div [hidden]="answersLoading" class="list-group">
+            <div *ngFor="let answer of answerItems; index as ind;"
+                class="list-group-item list-group-item-action flex-column align-items-start item-minimized-padding">
+                <div class="d-flex w-100 justify-content-between">
+                    <div class="col-3 col-sm-3 col-md-3 no-padding-horizontally text-left font-minimized">
+                        <div [ngClass]="{'answer-newly': !answer.wasRead}">
+                            {{ 'Individual.vicinity.form.answer.header.lookingFor.senton' | translate }}&nbsp;
+                            {{ answer.creationDate | date:'shortDate':undefined:locale }}
+                        </div>
+                        {{ 'Individual.vicinity.form.answer.header.lookingFor.sentby' | translate }}&nbsp;{{ answer.userName }}&nbsp;
+                        <button [disabled]="!answer.contacts || !answer.contacts.length" type="button" class="btn btn-outline-secondary no-look-like-btn"
+                            placement="right" container="body" ngbTooltip="{{ getTooltipTextAnswerContacts(answer) }}">
+                            <i class="far fa-id-card" [ngClass]="{'contact-icon-color': answer.contacts && answer.contacts.length}"></i>
+                        </button>
+                    </div>
+                    <div class="col-9 col-sm-9 col-md-9 no-padding-horizontally">
+                        <textarea type="text" id="answer-text" rows="3" class="md-textarea md-textarea-auto form-control font-not-smallest"
+                            [readonly]="true" [ngClass]="{'answer-newly': !answer.wasRead}" (focus)="checkNewly(answer)">{{ answer.text }}
+                        </textarea>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-outline-dark" (click)="modal.close('ok')">
+            {{ 'Merchant.shop.message.modal.delivery.btn.close' | translate }}
+        </button>
+    </div>
+</ng-template>
+
+<div class="card" *ngIf="lookingFor">
+    <h6 class="card-header">{{ 'Individual.form.lookingFor.header' | translate }}&nbsp;({{ address.addressLabel }},&nbsp;{{ address.city }})</h6>
+    <div class="card-body">
+        <form class="form-message" [formGroup]="formLookingFor" (ngSubmit)="saveLookingFor()">
+            <div class="form-row">
+                <div class="form-group col-12 col-md-12 col-sm-12">
+                    <label for="text" class="sr-only">{{ 'Individual.form.lookingFor.text.label' | translate }}</label>
+                    <textarea type="text" formControlName="text" id="text" class="md-textarea md-textarea-auto form-control"
+                        placeholder="{{ 'Individual.form.lookingFor.text.label' | translate }}"
+                        [ngClass]="{ 'is-invalid': submitted && f.text.errors }" [readonly]="!lookingForTextEditable()">
+                    </textarea>
+                    <div *ngIf="submitted && f.text.errors" class="invalid-feedback">
+                        <div *ngIf="f.text.errors.required">{{ 'Individual.form.lookingFor.text.required' | translate }}</div>
+                        <div *ngIf="f.text.errors.minlength">{{ 'Individual.form.lookingFor.text.minLength' | translate:{'requiredLength':f.text.errors.minlength.requiredLength} }}</div>
+                        <div *ngIf="f.text.errors.maxlength">{{ 'Individual.form.lookingFor.text.maxLength' | translate:{'limitedLength':f.text.errors.maxlength.requiredLength} }}</div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="col-lg-9 col-md-9 text-left mb-3">
+                    <ng-select formControlName="contacts" [addTag]="true" [addTagText]="getAddContactItemText()" [clearable]="false"
+                        [closeOnSelect]="true" [selectOnTab]="true" [multiple]="true" [readonly]="!lookingFor.active"
+                        placeholder="{{ 'Individual.form.lookingFor.contacts.placeholder' | translate }}"
+                        notFoundText="{{ 'Member.vicinity.form.contacts.notFoundText' | translate}}" >
+                    </ng-select>
+                </div>
+                <div class="col-lg-3 col-md-3 text-left mb-3">
+                  <div class="form-check custom-checkbox check-space-left">
+                    <input type="checkbox" formControlName="active" class="form-check-input custom-control-input"
+                        [ngClass]="{ 'is-invalid': submitted && f.active.errors }" id="active" />
+                    <label class="custom-control-label col-form-label-sm height-minimized-line keep-original-color" for="active">
+                        {{ 'Individual.form.lookingFor.active.label' | translate }}
+                    </label>
+                  </div>
+                </div>
+            </div>
+
+            <input formControlName="id" type="hidden" />
+            <input formControlName="address" type="hidden" />
+
+            <button type="submit" [disabled]="!isSaveAllowed()" class="btn btn-sm btn-primary"
+                [ngClass]="{'btn-action-disabled': !isSaveAllowed(), 'btn-action-enabled': isSaveAllowed()}">
+                <span *ngIf="requesting" class="spinner-border spinner-border-sm mr-1"></span>{{ 'Merchant.shop.message.form.btn.submit' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="requesting" class="btn btn-sm btn-secondary" (click)="backToParent()">
+                {{ 'Merchant.shop.message.form.btn.close' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="lookingFor.emptyAnswers" class="btn btn-sm btn-info" (click)="showAnswersView()"
+                [ngClass]="{'btn-action-disabled': lookingFor.emptyAnswers, 'btn-action-enabled': !lookingFor.emptyAnswers}" >
+                {{ 'Individual.form.lookingFor.answers.btn.view' | translate }}
+            </button>&nbsp;&nbsp;
+            <button type="button" [disabled]="!isRemoveAllowed()" class="btn btn-sm btn-danger" (click)="openConfirmModal(removeConfirmModal)"
+                [ngClass]="{'btn-action-disabled': !isRemoveAllowed(), 'btn-action-enabled': isRemoveAllowed()}">
+                <i class="fas fa-times"></i>&nbsp;{{ 'Merchant.shop.message.form.btn.remove' | translate }}
+            </button>
+        </form>
+    </div>
+</div>

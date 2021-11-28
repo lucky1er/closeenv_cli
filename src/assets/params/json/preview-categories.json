@@ -1,0 +1,64 @@
+[
+    { "code": "100-1000-0006", "label-en": "Deli restaurant", "label-fr": "Restaurant traiteur" },
+    { "code": "100-1000-0007", "label-en": "Cafeteria", "label-fr": "Cafétéria" },
+    { "code": "100-1000-0008", "label-en": "Bistro", "label-fr": "Bistro" },
+    { "code": "100-1000-0009", "label-en": "Fast Food", "label-fr": "Restauration rapide" },
+    { "code": "100-1100-0010", "label-en": "Coffee Shop", "label-fr": "Café restaurant" },
+
+    { "code": "200-2000-0011", "label-en": "Bar or pub", "label-fr": "Bar ou pub (café)" },
+
+    { "code": "600-6000-0061", "label-en": "Convenience Store", "label-fr": "Magasin de proximité" },
+    { "code": "600-6300-0064", "label-en": "Food-Beverage Specialty Store", "label-fr": "Alimentation et boissons" },
+    { "code": "600-6300-0066", "label-en": "Grocery", "label-fr": "Épicerie" },
+    { "code": "600-6300-0067", "label-en": "Specialty Food Store", "label-fr": "Alimentation spécialisée" },
+    { "code": "600-6300-0244", "label-en": "Bakery and Baked Goods Store", "label-fr": "Boulangerie et pâtisserie" },
+    { "code": "600-6300-0363", "label-en": "Butcher", "label-fr": "Boucherie" },
+    { "code": "600-6300-0364", "label-en": "Dairy Goods", "label-fr": "Produits laitiers" },
+
+    { "code": "600-6400-0070", "label-en": "Pharmacy", "label-fr": "Pharmacie" },
+
+    { "code": "600-6600-0077", "label-en": "Home Improvement-Hardware Store", "label-fr": "Bricolage - Quincaillerie" },
+    { "code": "600-6600-0078", "label-en": "Home Specialty Store", "label-fr": "Articles de maison" },
+    { "code": "600-6600-0082", "label-en": "Garden Center", "label-fr": "Jardinerie" },
+
+    { "code": "600-6700-0087", "label-en": "Bookstore", "label-fr": "Librairie" },
+
+    { "code": "600-6800-0089", "label-en": "Men's Apparel", "label-fr": "Vêtements pour hommes" },
+    { "code": "600-6800-0090", "label-en": "Women's Apparel", "label-fr": "Vêtements pour femmes" },
+    { "code": "600-6800-0091", "label-en": "Children's Apparel", "label-fr": "Vêtements pour enfants" },
+    { "code": "600-6800-0092", "label-en": "Shoes-Footwear", "label-fr": "Chaussures" },
+    { "code": "600-6800-0093", "label-en": "Specialty Clothing Store", "label-fr": "Vêtements spécialisés" },
+
+    { "code": "600-6900-0094", "label-en": "Sporting Goods Store", "label-fr": "Articles de sport" },
+    { "code": "600-6900-0097", "label-en": "Pet Supply", "label-fr": "Articles pour animaux de cie" },
+    { "code": "600-6900-0099", "label-en": "General Merchandise", "label-fr": "Marchandise générale" },
+    { "code": "600-6900-0100", "label-en": "Discount Store", "label-fr": "Magasin discount" },
+    { "code": "600-6900-0101", "label-en": "Flowers and Jewelry", "label-fr": "Fleurs et bijoux" },
+    { "code": "600-6900-0102", "label-en": "Variety Store", "label-fr": "Supermarché" },
+    { "code": "600-6900-0103", "label-en": "Gift, Antique and Art", "label-fr": "Cadeau, antiquité et art" },
+    { "code": "600-6900-0246", "label-en": "Bicycle Accessories Shop", "label-fr": "Magasin de vélos et accessoires" },
+    { "code": "600-6900-0247", "label-en": "Market", "label-fr": "Marché" },
+    { "code": "600-6900-0251", "label-en": "Used-Second Hand Merchandise Stores", "label-fr": "Produits d'occasion" },
+    { "code": "600-6900-0307", "label-en": "Arts and Crafts Supplies", "label-fr": "Produits d'art et d'artisanat" },
+    { "code": "600-6900-0355", "label-en": "Florist", "label-fr": "Fleuriste" },
+    { "code": "600-6900-0356", "label-en": "Jeweler", "label-fr": "Bijouterie" },
+    { "code": "600-6900-0358", "label-en": "Toy Store", "label-fr": "Magasin de jouets" },
+
+    { "code": "600-6950-0400", "label-en": "Nail Salon", "label-fr": "Salon de manucure" },
+    { "code": "600-6950-0401", "label-en": "Hair Salon", "label-fr": "Salon de coiffure" },
+
+    { "code": "700-7200-0253", "label-en": "Catering and Other Food Services", "label-fr": "Restauration et autres services alimentaires" },
+    { "code": "700-7200-0257", "label-en": "Farming", "label-fr": "Agriculture" },
+    { "code": "700-7200-0258", "label-en": "Food Production", "label-fr": "Production alimentaire" },
+    { "code": "700-7200-0262", "label-en": "Landscaping Services", "label-fr": "Paysagiste" },
+    { "code": "700-7200-0344", "label-en": "Property Management", "label-fr": "Agence immobilière" },
+
+    { "code": "700-7400-0133", "label-en": "Travel Agent-Ticketing", "label-fr": "Agence de voyage, Billetterie" },
+    { "code": "700-7400-0143", "label-en": "Mover", "label-fr": "Déménageur" },
+    { "code": "700-7400-0149", "label-en": "Tailor and Alteration", "label-fr": "Tailleur, retouche sur mesure" },
+    { "code": "700-7400-0281", "label-en": "Bicycle Service and Maintenance", "label-fr": "Service et entretien de vélos" },
+    { "code": "700-7400-0352", "label-en": "Recycling Center", "label-fr": "Centre de recyclage" },
+    { "code": "700-7400-0366", "label-en": "Plumbing", "label-fr": "Plomberie" },
+    { "code": "700-7600-0322", "label-en": "EV Charging Station", "label-fr": "Station de recharge V.E." },
+    { "code": "700-7850-0122", "label-en": "Car Repair", "label-fr": "Réparation automobile" }
+]

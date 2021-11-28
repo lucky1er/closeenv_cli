@@ -1,0 +1,3 @@
+User-agent: *
+Disallow:
+Sitemap: https://close-env.com/sitemap.xml
